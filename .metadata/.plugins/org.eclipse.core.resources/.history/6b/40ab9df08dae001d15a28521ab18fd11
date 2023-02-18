@@ -1,0 +1,47 @@
+package Servidor;
+
+import java.rmi.*;
+import java.rmi.server.*;
+
+import Comun.HolaInt;
+
+import java.rmi.registry.Registry.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.LocateRegistry.*;
+import java.rmi.registry.Registry;
+import java.net.*;
+import java.io.*;
+
+
+/*
+ * esta clase representa un servidor de objeto
+ * @autor: rsanchez628@alumno.uned.es
+ */
+
+public class Servidor {
+	
+	public static void main(String args[]) throws Exception{
+		
+		int puerto = Registry.REGISTRY_PORT;
+		Registry registry = LocateRegistry.getRegistry(puerto);
+		
+		try {
+			registry.list();
+			System.out.println("se ha levantado el servidor en el puerto: "+puerto);
+			
+		} catch (Exception e) {
+			registry = LocateRegistry.createRegistry(puerto);
+			System.out.println("se ha creado el servidor en el puerto: "+puerto);
+		}
+		
+		HolaInt servidor = new HolaImp();
+		
+		//servidor = (HolaInt) UnicastRemoteObject.exportObject(servidor, 0);
+		Naming.rebind("rmi://localhost:" + puerto + "/" + HolaInt.class.getCanonicalName(), servidor);
+		for (String name : registry.list()) {
+			System.out.println(name);
+		}
+			
+	}
+
+}

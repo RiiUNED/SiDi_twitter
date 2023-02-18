@@ -1,0 +1,71 @@
+package Servidor;
+
+import java.rmi.*;
+import java.rmi.server.*;
+import java.util.HashMap;
+
+import Comun.ServerInt;
+import Comun.Usuario;
+
+import java.rmi.registry.Registry.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.LocateRegistry.*;
+import java.rmi.registry.Registry;
+import java.net.*;
+import java.io.*;
+
+
+/*
+ * esta clase representa un servidor de objeto
+ * @autor: rsanchez628@alumno.uned.es
+ */
+
+public class Servidor {
+	
+	private HashMap<String,Usuario> BBDD = new HashMap<String,Usuario>();
+	
+	public static void main(String args[]) throws Exception{
+		
+		Servidor s = new Servidor();
+		
+		int puerto = Registry.REGISTRY_PORT;
+		Registry registry = LocateRegistry.getRegistry(puerto);
+		
+		try {
+			registry.list();
+			System.out.println("se ha levantado el servidor en el puerto: "+puerto);
+			
+		} catch (Exception e) {
+			registry = LocateRegistry.createRegistry(puerto);
+			System.out.println("se ha creado el servidor en el puerto: "+puerto);
+		}
+		
+		ServerInt servidor = new ServerImp();
+		
+		Naming.rebind("rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName(), servidor);
+		System.out.println("Interfaces publicadas");
+		for (String name : registry.list()) {
+			System.out.println(name);
+		}
+			
+	}
+	
+	/*
+	 * Registra usuarios en la aplicacion
+	 * @autor: rsanchez628@alumno.uned.es
+	 * 			Ricardo Sanchez
+	 */
+	public String autenticarse (Usuario user){
+		
+		String ok = "Se ha validad el usuaro con nick: "+ user.getNick();
+		String error = "No se valido el usuario. Ya hay un usuario con nick: "+ user.getNick();
+		
+		if (this.BBDD.containsKey(user.getNick())) {
+			return error;
+		} else {
+			return ok;
+		}
+		
+	}
+
+}

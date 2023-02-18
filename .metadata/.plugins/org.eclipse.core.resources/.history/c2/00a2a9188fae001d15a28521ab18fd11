@@ -1,0 +1,33 @@
+package cliente;
+
+import java.io.*;
+import java.rmi.*;
+import java.rmi.registry.Registry;
+
+import Comun.HolaInt;
+
+/*
+ * La clase representa un cliente de objeto distribuido
+ * @autor: rsanchez628@alumno.uned.es
+ */
+
+public class Cliente {
+	
+	public static void main(String[] args) {
+		
+		int puerto = Registry.REGISTRY_PORT;
+		
+		try {
+			
+			String registro = "rmi://localhost:" + puerto + "/" + HolaInt.class.getCanonicalName();
+			HolaInt h = (HolaInt)Naming.lookup(registro);
+			String mensaje = h.decirHola("Pato Donald");
+			
+		} catch (Exception e) {
+			
+			System.out.println("Excepcion: " + e);
+			
+		}
+	}
+
+}

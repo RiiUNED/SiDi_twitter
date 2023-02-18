@@ -1,0 +1,37 @@
+package cliente;
+
+import java.io.*;
+import java.rmi.*;
+import java.rmi.registry.Registry;
+
+import Comun.ServerInt;
+
+/*
+ * La clase representa un cliente de objeto distribuido
+ * @autor: rsanchez628@alumno.uned.es
+ */
+
+public class Cliente {
+	
+	public static void main(String[] args) {
+		
+		int puerto = Registry.REGISTRY_PORT;
+		
+		try {
+			
+			//Se comunica con la interfaz
+			String registro = "rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName();
+			ServerInt h = (ServerInt)Naming.lookup(registro);
+			
+			//Usa métodos de la interfaz
+			String mensaje = h.decirHola("Pato Donald");
+			System.out.println(mensaje);
+			
+		} catch (Exception e) {
+			
+			System.out.println("Excepcion: " + e);
+			
+		}
+	}
+
+}

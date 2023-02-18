@@ -2,8 +2,10 @@ package Servidor;
 
 import java.rmi.*;
 import java.rmi.server.*;
+import java.util.HashMap;
 
-import Comun.HolaInt;
+import Comun.ServerInt;
+import Comun.Usuario;
 
 import java.rmi.registry.Registry.*;
 import java.rmi.registry.LocateRegistry;
@@ -16,44 +18,41 @@ import java.io.*;
 /*
  * esta clase representa un servidor de objeto
  * @autor: rsanchez628@alumno.uned.es
+ * 		Ricardo Sánchez
  */
 
 public class Servidor {
 	
-	private static final int PUERTO = 2023;
-	
-	public static void main(String args[]){
+	public static void main(String args[]) throws Exception{
 		
-		//servicios.setCodeBase(HolaInt.class);
-		
+		//registro en el puerto por defecto de rmi
+		int puerto = Registry.REGISTRY_PORT;
+		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
-			
-			arrancarRegistro(PUERTO);
-			HolaImp objExportado = new HolaImp();
-			Integer ipuerto = (Integer)PUERTO;
-			String spuerto = ipuerto.toString();
-			String URLRegistro = "rmi://localhost:"+ spuerto + "/hola";
-			Naming.rebind(URLRegistro, objExportado);
-			System.out.println("se ha levantado el servidor");
+			registry.list();
+			System.out.println("se ha registrado el servidor en el puerto: "+puerto);
 			
 		} catch (Exception e) {
-			System.out.println("Excepcion en el main del servidor" + e);
-		}
-			
-	}
-	
-	/*
-	 * Arranca un registro en la máquina locañ
-	 */
-	public static void arrancarRegistro(int numeroPuerto) throws RemoteException{
-		try {
-			Registry registro = LocateRegistry.getRegistry(numeroPuerto);
-			registro.list();
-		} catch (RemoteException e) {
-			LocateRegistry.createRegistry(numeroPuerto);
-			System.out.println("Registro RMI creado en el puerto: " + numeroPuerto);
+			registry = LocateRegistry.createRegistry(puerto);
+			System.out.println("se ha creado el servidor en el puerto: "+puerto);
 		}
 		
+		//Exportar objeto
+		ServerInt servidor = new ServerImp();
+		/*
+		if (UnicastRemoteObject.unexportObject(servidor, false)) {
+		    System.out.println("El objeto ya estaba exportado y ha sido desexportado");
+		}*/
+		UnicastRemoteObject.unexportObject(servidor, false);
+		servidor = (ServerInt) UnicastRemoteObject.exportObject(servidor, 0);
+		Naming.rebind("rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName(), servidor);
+		
+		//salida por consola de las interfaces que pueden consumir los clientes
+		System.out.println("Interfaces publicadas");
+		for (String name : registry.list()) {
+			System.out.println(name);
+		}
+			
 	}
 
 }
