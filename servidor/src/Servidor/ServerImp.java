@@ -2,7 +2,7 @@ package Servidor;
 
 import java.rmi.*;
 import java.rmi.server.*;
-//import java.util.HashMap;
+import java.util.HashMap;
 
 import Comun.ServerInt;
 import Comun.Usuario;
@@ -15,6 +15,9 @@ import Comun.Usuario;
  */
 public class ServerImp extends UnicastRemoteObject implements ServerInt{
 	
+	//BBDD para probar autenticar antes de desligarla a otro servidor
+	private HashMap<String, Usuario> bbdd = new HashMap<>();
+	
 	public ServerImp() throws RemoteException{
 		super();
 	}
@@ -25,6 +28,12 @@ public class ServerImp extends UnicastRemoteObject implements ServerInt{
 	 * 			Ricardo Sanchez
 	 */
 	//autenticar
+	@Override
+	public void autenticar(Usuario u) throws java.rmi.RemoteException{
+		System.out.println(bbdd.size());
+		this.bbdd.put(u.getNick(), u);
+		System.out.println(bbdd.size());
+	}
 	
 	/*
 	 * Test para ver si el problema está enviando el objeto Usuario

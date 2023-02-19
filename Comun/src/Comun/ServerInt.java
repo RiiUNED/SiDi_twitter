@@ -16,7 +16,8 @@ public interface ServerInt extends Remote {
 	 * @autor: rsanchez628@alumno.uned.es
 	 * 			Ricardo Sanchez
 	 */
-	//autenticar
+	//autenticar (prueba)
+	public void autenticar(Usuario u) throws java.rmi.RemoteException;
 	
 	//interfaces de prueba para el paso de objetos desde el cliente
 	public String autenticarse1 (Usuario u) throws java.rmi.RemoteException;

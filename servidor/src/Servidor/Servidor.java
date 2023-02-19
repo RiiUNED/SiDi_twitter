@@ -4,8 +4,7 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.util.HashMap;
 
-import Comun.ServerInt;
-import Comun.Usuario;
+import Comun.*;
 
 import java.rmi.registry.Registry.*;
 import java.rmi.registry.LocateRegistry;
@@ -38,14 +37,17 @@ public class Servidor {
 		}
 		
 		//Exportar objeto
-		ServerInt servidor = new ServerImp();
+		//ServerInt servidor = new ServerImp();
+		AutentificarInt servidor = new AutentificarImpl();
 		/*
 		if (UnicastRemoteObject.unexportObject(servidor, false)) {
 		    System.out.println("El objeto ya estaba exportado y ha sido desexportado");
 		}*/
 		UnicastRemoteObject.unexportObject(servidor, false);
-		servidor = (ServerInt) UnicastRemoteObject.exportObject(servidor, 0);
-		Naming.rebind("rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName(), servidor);
+		//servidor = (ServerInt) UnicastRemoteObject.exportObject(servidor, 0);
+		servidor = (AutentificarInt) UnicastRemoteObject.exportObject(servidor, 0);
+		//Naming.rebind("rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName(), servidor);
+		Naming.rebind("rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName(), servidor);
 		
 		//salida por consola de las interfaces que pueden consumir los clientes
 		System.out.println("Interfaces publicadas");

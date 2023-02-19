@@ -42,5 +42,25 @@ public class Usuario implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
+	//Mostrar usuario
+	public void show() {
+		System.out.println(this.toString());
+	}
+	@Override
+    public String toString() {
+        return "Usuario{" +
+                "nombre='" + this.name + '\'' +
+                ", nick='" + this.nick + '\'' +
+                ", pass='" + this.password + '\'' +
+                '}';
+    }
+	//mismo usuario
+	public Boolean equal(Usuario u) {
+		Boolean name = this.name.equals(u.getName());
+		Boolean nick = this.nick.equals(u.getNick());
+		Boolean pass = this.password.equals(u.getPassword());
+		
+		return name && nick && pass;
+	}
 }
