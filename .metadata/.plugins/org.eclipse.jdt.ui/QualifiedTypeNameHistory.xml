@@ -6,10 +6,16 @@
     <fullyQualifiedTypeName name="java.util.Scanner"/>
     <fullyQualifiedTypeName name="Comun.Usuario"/>
     <fullyQualifiedTypeName name="java.rmi.server.RemoteObject"/>
-    <fullyQualifiedTypeName name="java.io.Serializable"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
-    <fullyQualifiedTypeName name="java.rmi.RemoteException"/>
+    <fullyQualifiedTypeName name="Comun.AutentificarInt"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
     <fullyQualifiedTypeName name="java.rmi.Remote"/>
     <fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
-    <fullyQualifiedTypeName name="Comun.AutentificarInt"/>
+    <fullyQualifiedTypeName name="Comun.GestorInt"/>
+    <fullyQualifiedTypeName name="java.io.Serializable"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="java.rmi.AccessException"/>
+    <fullyQualifiedTypeName name="java.rmi.RemoteException"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="java.util.Map.Entry"/>
 </qualifiedTypeNameHistroy>

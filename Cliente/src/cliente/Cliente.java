@@ -1,11 +1,10 @@
 package cliente;
 
-import java.io.*;
+//import java.io.*;
 import java.rmi.*;
 import java.rmi.registry.Registry;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+//import java.util.Scanner;
 
 import Comun.*;
 
@@ -23,42 +22,85 @@ public class Cliente {
 
 		try {
 
+			// IMPORTAR LAS INTERFACES
+			System.out.println("Importando las interfaces...");
+			System.out.println();
 			// Se comunica con la interfaz
 			// String registro = "rmi://localhost:" + puerto + "/" +
 			// ServerInt.class.getCanonicalName();
-			String registro = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
+			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
+			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
 			// ServerInt h = (ServerInt)Naming.lookup(registro);
-			AutentificarInt h = (AutentificarInt) Naming.lookup(registro);
+			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
+			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
 
-			String name = "Ricardo";
-			String nick = "rsanchez628";
-			String pass = "SiDi_2023";
+			// Crear usuarios
+			List<List<Usuario>> u = crearUsuario();
+			List<Usuario> usuarios = u.get(0);
+			List<Usuario> bloqueados = u.get(1);
+			List<Usuario> seguidores = u.get(2);
 
-			Usuario user1 = new Usuario(name, nick, pass);
+			// Crear trinos
+			List<Trino> trinos = crearTrinos(usuarios);
 
-			if (h.registro(user1)) {
-				System.out.println("el usuario se ha registrado correctamente");
-			} else {
-				System.out.println("ya existe un usuario registrado con nick: " + user1.getNick());
-			}
-			
-			name = "Roberto";
-			nick = "rosanchez628";
-			pass = "SiDi_2024";
-			Usuario user2 = new Usuario(name, nick, pass);
+			// AUTENTIFICAR USUARIOS
+			Usuario userRi = usuarios.get(0);
+			Usuario userRo = usuarios.get(1);
+			System.out.println("autenticando los usuarios...");
+			autentificar(servicioAutentificar, userRi);
+			autentificar(servicioAutentificar, userRo);
 
-			if (h.registro(user2)) {
-				System.out.println("el usuario se ha registrado correctamente");
-			} else {
-				System.out.println("ya existe un usuario registrado con nick: " + user2.getNick());
-			}
-			
-			// h.autenticar(user);
-
-			HashMap<String, Usuario> bbdd = h.getBBDD();
+			// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
+			System.out.println();
+			System.out.println("chequeando la correcta autenticación de usuarios...");
+			HashMap<String, Usuario> bbdd = servicioAutentificar.getBBDD();
 			for (Map.Entry<String, Usuario> entry : bbdd.entrySet()) {
 				entry.getValue().show();
 			}
+
+			// ENVIANDO TRINOS
+			System.out.println("enviando trinos...");
+			System.out.println();
+
+			servicioGestor.enviar(userRi, trinos.get(0));
+			servicioGestor.enviar(userRi, trinos.get(1));
+			servicioGestor.enviar(userRo, trinos.get(2));
+			servicioGestor.enviar(userRo, trinos.get(3));
+			servicioGestor.enviar(userRo, trinos.get(4));
+
+			// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
+			HashMap<Usuario, List<Trino>> trinosPublicados = servicioGestor.getTrinos();
+			showTrinos(trinosPublicados);
+
+			// Bloqueando usuarios
+			// ENVIANDO TRINOS
+			System.out.println("bloqueando usuarios...");
+			System.out.println();
+			
+			Usuario blq1 = bloqueados.get(0);
+			Usuario blq2 = bloqueados.get(1);
+			Usuario blq3 = bloqueados.get(2);
+			servicioGestor.bloquear(userRi, blq1);
+			servicioGestor.bloquear(userRi, blq2);
+			servicioGestor.bloquear(userRi, blq3);
+
+			// CHEQUEANDO EL CORRECTO BLOQUEO DE USUARIOS
+			HashMap<Usuario, List<Usuario>> usuariosBloqueados = servicioGestor.getBloqueados();
+			showBloqueados(usuariosBloqueados);
+			
+			//Siguiendo usuarios
+			Usuario sgd1 = seguidores.get(0);
+			Usuario sgd2 = seguidores.get(1);
+			Usuario sgd3 = seguidores.get(2);
+			servicioGestor.seguir(sgd1, userRi);
+			servicioGestor.seguir(sgd2, userRi);
+			servicioGestor.seguir(sgd2, userRo);
+			servicioGestor.seguir(sgd3, userRo);
+			
+			// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
+			System.out.println("Ri -> 1, 2; Ro -> 2, 3");
+			HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidos();
+			showSeguidos(s);
 
 		} catch (Exception e) {
 
@@ -66,6 +108,161 @@ public class Cliente {
 			e.printStackTrace();
 
 		}
+
 	}
 
+	/*
+	 * Servico Autentificar. Registra a un usuario en la aplicacion
+	 * 
+	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
+	 */
+	public static void autentificar(AutentificarInt servicio, Usuario u) {
+		u.show();
+		try {
+			if (servicio.registro(u)) {
+				System.out.println("el usuario se ha registrado correctamente");
+			} else {
+				System.out.println("ya existe un usuario registrado con nick: " + u.getNick());
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// Para chequear el correcto funcionamiento del sistema
+	// -----------------------------------------------------
+	// BORRAR DESPUÉS
+
+	// Crear trinos
+	public static List<Trino> crearTrinos(List<Usuario> usuarios) {
+
+		List<Trino> trinos = new LinkedList<>();
+
+		Usuario userRi = usuarios.get(0);
+		Usuario userRo = usuarios.get(1);
+		System.out.println("creando los trinos...");
+		System.out.println();
+		String messageRi1 = "Hola, me llamo RICARDO.";
+		Trino trinoRi1 = new Trino(userRi, messageRi1);
+		trinos.add(trinoRi1);
+		String messageRi2 = "RICARDO publica su segundo trino.";
+		Trino trinoRi2 = new Trino(userRi, messageRi2);
+		trinos.add(trinoRi2);
+		String messageRo1 = "Hola, me llamo ROBERTO.";
+		Trino trinoRo1 = new Trino(userRo, messageRo1);
+		trinos.add(trinoRo1);
+		String messageRo2 = "ROBERTO publica su segundo trino.";
+		Trino trinoRo2 = new Trino(userRo, messageRo2);
+		trinos.add(trinoRo2);
+		String messageRo3 = "ROBERTO publica su tercer trino.";
+		Trino trinoRo3 = new Trino(userRo, messageRo3);
+		trinos.add(trinoRo3);
+		
+		return trinos;
+	}
+
+	// crear usuarios
+	public static List<List<Usuario>> crearUsuario() {
+
+		List<List<Usuario>> u = new LinkedList<>();
+		List<Usuario> usuarios = new LinkedList<>();
+		List<Usuario> bloqueados = new LinkedList<>();
+		List<Usuario> seguidores = new LinkedList<>();
+
+		// Crear usuarios
+		System.out.println("creando los usuarios...");
+		System.out.println();
+		String name = "Ricardo";
+		String nick = "I000";
+		String pass = "SiDi_2023";
+		Usuario userRi = new Usuario(name, nick, pass);
+		usuarios.add(userRi);
+
+		name = "Roberto";
+		nick = "O999";
+		pass = "SiDi_2024";
+		Usuario userRo = new Usuario(name, nick, pass);
+		usuarios.add(userRo);
+
+		// Usuarios bloqueados
+		name = "Bloqueado1";
+		nick = "BLQ1";
+		pass = "SiDi_2024";
+		Usuario blq1 = new Usuario(name, nick, pass);
+		name = "Bloqueado2";
+		nick = "BLQ2";
+		pass = "SiDi_2024";
+		Usuario blq2 = new Usuario(name, nick, pass);
+		name = "Bloqueado3";
+		nick = "BLQ3";
+		pass = "SiDi_2024";
+		Usuario blq3 = new Usuario(name, nick, pass);
+		bloqueados.add(blq1);
+		bloqueados.add(blq2);
+		bloqueados.add(blq3);
+
+		// Seguidores
+		name = "Seguidor1";
+		nick = "SGD1";
+		pass = "SiDi_2024";
+		Usuario sgd1 = new Usuario(name, nick, pass);
+		name = "Seguidor2";
+		nick = "SGD2";
+		pass = "SiDi_2024";
+		Usuario sgd2 = new Usuario(name, nick, pass);
+		name = "Seguidor3";
+		nick = "SGD3";
+		pass = "SiDi_2024";
+		Usuario sgd3 = new Usuario(name, nick, pass);
+		seguidores.add(sgd1);
+		seguidores.add(sgd2);
+		seguidores.add(sgd3);
+
+		u.add(usuarios);
+		u.add(bloqueados);
+		u.add(seguidores);
+
+		return u;
+	}
+
+	// --- funciones que muestran por consola la BBDD del servidor
+	public static void showTrinos(HashMap<Usuario, List<Trino>> tp) {
+		for (Map.Entry<Usuario, List<Trino>> entry : tp.entrySet()) {
+			Usuario u = entry.getKey();
+			String nick = u.getNick();
+			System.out.println("El usuario " + nick + " ha publicado:");
+			List<Trino> l = entry.getValue();
+			for (Trino e : l) {
+				System.out.println(e.getMessage());
+				System.out.println();
+			}
+		}
+	}
+
+	public static void showBloqueados(HashMap<Usuario, List<Usuario>> ub) {
+		for (Map.Entry<Usuario, List<Usuario>> entry : ub.entrySet()) {
+			Usuario u = entry.getKey();
+			String nick = u.getNick();
+			System.out.println("El usuario " + nick + " bloqueado a:");
+			List<Usuario> l = entry.getValue();
+			for (Usuario e : l) {
+				e.show();
+				System.out.println();
+			}
+		}
+	}
+
+	public static void showSeguidos(HashMap<Usuario, List<Usuario>> ls) {
+		for (Map.Entry<Usuario, List<Usuario>> entry : ls.entrySet()) {
+			Usuario u = entry.getKey();
+			String nick = u.getNick();
+			System.out.println("Los usuarios del seguidor: " + nick + " son:");
+			List<Usuario> l = entry.getValue();
+			for (Usuario e : l) {
+				e.show();
+				System.out.println();
+			}
+		}
+	}
 }
