@@ -33,23 +33,69 @@ public class Cliente {
 			// ServerInt h = (ServerInt)Naming.lookup(registro);
 			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
 			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
+			
+			//Especificar cliente
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Cliente (1)Ricardo o Cliente (2)Roberto? ");
+			int opcion = scanner.nextInt();
+			
 
 			// Crear usuarios
 			List<List<Usuario>> u = crearUsuario();
 			List<Usuario> usuarios = u.get(0);
 			List<Usuario> bloqueados = u.get(1);
 			List<Usuario> seguidores = u.get(2);
+			
+			Usuario userRi = usuarios.get(0);
+			Usuario userRo = usuarios.get(1);
 
 			// Crear trinos
 			List<Trino> trinos = crearTrinos(usuarios);
-
-			// AUTENTIFICAR USUARIOS
-			Usuario userRi = usuarios.get(0);
-			Usuario userRo = usuarios.get(1);
+			
+			//Siguiendo usuarios
+			Usuario sgd1 = seguidores.get(0);
+			Usuario sgd2 = seguidores.get(1);
+			Usuario sgd3 = seguidores.get(2);
+			
+			
 			System.out.println("autenticando los usuarios...");
-			autentificar(servicioAutentificar, userRi);
-			autentificar(servicioAutentificar, userRo);
-
+			// AUTENTIFICAR USUARIOS
+			if(opcion==1) {
+				autentificar(servicioAutentificar, userRi);
+				
+				// ENVIANDO TRINOS
+				System.out.println("enviando trinos...");
+				System.out.println();
+				
+				servicioGestor.enviar(userRi, trinos.get(0));
+				servicioGestor.enviar(userRi, trinos.get(1));
+				
+				// Bloqueando usuarios
+				System.out.println("bloqueando usuarios...");
+				System.out.println();
+				
+				Usuario blq1 = bloqueados.get(0);
+				Usuario blq2 = bloqueados.get(1);
+				Usuario blq3 = bloqueados.get(2);
+				servicioGestor.bloquear(userRi, blq1);
+				servicioGestor.bloquear(userRi, blq2);
+				servicioGestor.bloquear(userRi, blq3);
+				servicioGestor.seguir(sgd1, userRi);
+				servicioGestor.seguir(sgd2, userRi);
+			} else {
+				autentificar(servicioAutentificar, userRo);
+				
+				// ENVIANDO TRINOS
+				System.out.println("enviando trinos...");
+				System.out.println();
+				
+				servicioGestor.enviar(userRo, trinos.get(2));
+				servicioGestor.enviar(userRo, trinos.get(3));
+				servicioGestor.enviar(userRo, trinos.get(4));
+				servicioGestor.seguir(sgd2, userRo);
+				servicioGestor.seguir(sgd3, userRo);
+			}
+			
 			// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
 			System.out.println();
 			System.out.println("chequeando la correcta autenticación de usuarios...");
@@ -58,44 +104,13 @@ public class Cliente {
 				entry.getValue().show();
 			}
 
-			// ENVIANDO TRINOS
-			System.out.println("enviando trinos...");
-			System.out.println();
-
-			servicioGestor.enviar(userRi, trinos.get(0));
-			servicioGestor.enviar(userRi, trinos.get(1));
-			servicioGestor.enviar(userRo, trinos.get(2));
-			servicioGestor.enviar(userRo, trinos.get(3));
-			servicioGestor.enviar(userRo, trinos.get(4));
-
 			// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
 			HashMap<Usuario, List<Trino>> trinosPublicados = servicioGestor.getTrinos();
 			showTrinos(trinosPublicados);
 
-			// Bloqueando usuarios
-			// ENVIANDO TRINOS
-			System.out.println("bloqueando usuarios...");
-			System.out.println();
-			
-			Usuario blq1 = bloqueados.get(0);
-			Usuario blq2 = bloqueados.get(1);
-			Usuario blq3 = bloqueados.get(2);
-			servicioGestor.bloquear(userRi, blq1);
-			servicioGestor.bloquear(userRi, blq2);
-			servicioGestor.bloquear(userRi, blq3);
-
 			// CHEQUEANDO EL CORRECTO BLOQUEO DE USUARIOS
 			HashMap<Usuario, List<Usuario>> usuariosBloqueados = servicioGestor.getBloqueados();
 			showBloqueados(usuariosBloqueados);
-			
-			//Siguiendo usuarios
-			Usuario sgd1 = seguidores.get(0);
-			Usuario sgd2 = seguidores.get(1);
-			Usuario sgd3 = seguidores.get(2);
-			servicioGestor.seguir(sgd1, userRi);
-			servicioGestor.seguir(sgd2, userRi);
-			servicioGestor.seguir(sgd2, userRo);
-			servicioGestor.seguir(sgd3, userRo);
 			
 			// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
 			System.out.println("Ri -> 1, 2; Ro -> 2, 3");

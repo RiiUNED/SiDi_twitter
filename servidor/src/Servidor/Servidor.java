@@ -37,19 +37,12 @@ public class Servidor {
 		}
 		
 		//Exportar objeto
-		//ServerInt servidor = new ServerImp();
 		AutentificarInt servidor1 = new AutentificarImpl();
 		GestorInt servidor2 = new GestorImpl();
-		/*
-		if (UnicastRemoteObject.unexportObject(servidor, false)) {
-		    System.out.println("El objeto ya estaba exportado y ha sido desexportado");
-		}*/
 		UnicastRemoteObject.unexportObject(servidor1, false);
 		UnicastRemoteObject.unexportObject(servidor2, false);
-		//servidor = (ServerInt) UnicastRemoteObject.exportObject(servidor, 0);
 		servidor1 = (AutentificarInt) UnicastRemoteObject.exportObject(servidor1, 0);
 		servidor2 = (GestorInt) UnicastRemoteObject.exportObject(servidor2, 0);
-		//Naming.rebind("rmi://localhost:" + puerto + "/" + ServerInt.class.getCanonicalName(), servidor);
 		Naming.rebind("rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName(), servidor1);
 		Naming.rebind("rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName(), servidor2);
 		

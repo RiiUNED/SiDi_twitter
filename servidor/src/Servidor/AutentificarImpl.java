@@ -5,7 +5,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 import Comun.AutentificarInt;
-import Comun.ServerInt;
 import Comun.Usuario;
 
 /*

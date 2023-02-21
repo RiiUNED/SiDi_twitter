@@ -1,6 +1,10 @@
 package Servidor;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -27,12 +31,33 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 
 	// el usuario envia un trino a sus seguidores
 	public void enviar(Usuario u, Trino t) throws java.rmi.RemoteException {
-		if (this.trinos.containsKey(u)) {
-			this.trinos.get(u).add(t);
-		} else {
-			List<Trino> l = new LinkedList<>();
-			l.add(t);
-			this.trinos.put(u, l);
+		/*
+		 * if (this.trinos.containsKey(u)) { this.trinos.get(u).add(t); } else {
+		 * List<Trino> l = new LinkedList<>(); l.add(t); this.trinos.put(u, l); }
+		 */
+		int puerto = Registry.REGISTRY_PORT;
+		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
+		try {
+			DatosInt servicioDatos = (DatosInt) Naming.lookup(registroDatos);
+			servicioDatos.trinar(u, t);
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// test de la función enviar. BORRAR DESPUÉS
+	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
+		// return this.trinos;
+		int puerto = Registry.REGISTRY_PORT;
+		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
+		try {
+			DatosInt servicioDatos = (DatosInt) Naming.lookup(registroDatos);
+			return servicioDatos.getTrinos();
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new HashMap<>();
 		}
 	}
 
@@ -56,11 +81,6 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 			l.add(seguidor);
 			this.seguidos.put(seguido, l);
 		}
-	}
-
-	// test de la función enviar. BORRAR DESPUÉS
-	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
-		return this.trinos;
 	}
 
 	// test de la funcion bloquear. BORRAR DESPUÉS
