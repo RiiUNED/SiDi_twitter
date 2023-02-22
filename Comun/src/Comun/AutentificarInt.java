@@ -12,13 +12,14 @@ import java.util.*;
 
 public interface AutentificarInt extends Remote {
 
-	// registra a los usuarios en el servicio de mensajeria
-	public Boolean registro(Usuario u) throws java.rmi.RemoteException;
+	// registra un usuario en el sistema
+	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
 
-	// loguea a los usuarios en el servicio de mensajeria
-	public Boolean login(Usuario u) throws java.rmi.RemoteException;
-	
-	// clase auxiliar para chequeo durante la implementación de la interfaz
-	// borrar después
-	public HashMap<String, Usuario> getBBDD() throws java.rmi.RemoteException;
+	// loguea al usuario para perimitirle hacer uso del sistema
+	public boolean loguear(Usuario u) throws java.rmi.RemoteException;
+
+	// banea a un usuario impidiendole hacer uso del sistema
+	public boolean banear(Usuario u) throws java.rmi.RemoteException;
+
+	// Clases auxiliares para chequeao. BORRAR DESPUÉS
 }

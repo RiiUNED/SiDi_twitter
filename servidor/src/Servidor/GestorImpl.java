@@ -1,12 +1,11 @@
 package Servidor;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.*;
+import java.rmi.registry.*;
+import java.rmi.server.*;
+
 import java.util.*;
+import java.net.*;
 
 import Comun.*;
 
@@ -21,75 +20,56 @@ import Comun.*;
 
 public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 
-	private HashMap<Usuario, List<Trino>> trinos = new HashMap<>();
-	private HashMap<Usuario, List<Usuario>> bloqueos = new HashMap<>();
-	private HashMap<Usuario, List<Usuario>> seguidos = new HashMap<>();
+	private DatosInt servicioDatos;
 
 	public GestorImpl() throws RemoteException {
 		super();
+		int puerto = Registry.REGISTRY_PORT;
+		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
+		try {
+			this.servicioDatos = (DatosInt) Naming.lookup(registroDatos);
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// el usuario envia un trino a sus seguidores
 	public void enviar(Usuario u, Trino t) throws java.rmi.RemoteException {
-		/*
-		 * if (this.trinos.containsKey(u)) { this.trinos.get(u).add(t); } else {
-		 * List<Trino> l = new LinkedList<>(); l.add(t); this.trinos.put(u, l); }
-		 */
-		int puerto = Registry.REGISTRY_PORT;
-		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
-		try {
-			DatosInt servicioDatos = (DatosInt) Naming.lookup(registroDatos);
-			servicioDatos.trinar(u, t);
-		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.servicioDatos.trinar(u, t);
+	}
+
+	// un usuario bloquea a otro
+	public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException {
+		this.servicioDatos.bloquear(lider, bloqueado);
+	}
+
+	// un usuario desbloquea a otro
+	public void desbloquear(Usuario lider, Usuario desbloqueado) throws java.rmi.RemoteException {
+		this.servicioDatos.desbloquear(lider, desbloqueado);
+	}
+
+	// un usuario sigue a otro
+	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException {
+		this.servicioDatos.seguir(lider, seguidor);
+	}
+	
+	// un seguidor abandona a su lider
+	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException{
+		this.servicioDatos.abandonar(lider, ex);
 	}
 
 	// test de la función enviar. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
-		// return this.trinos;
-		int puerto = Registry.REGISTRY_PORT;
-		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
-		try {
-			DatosInt servicioDatos = (DatosInt) Naming.lookup(registroDatos);
-			return servicioDatos.getTrinos();
-		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new HashMap<>();
-		}
-	}
-
-	// un usuario bloquea a otro
-	public void bloquear(Usuario bloqueante, Usuario bloqueado) throws java.rmi.RemoteException {
-		if (this.bloqueos.containsKey(bloqueante)) {
-			this.bloqueos.get(bloqueante).add(bloqueado);
-		} else {
-			List<Usuario> l = new LinkedList<>();
-			l.add(bloqueado);
-			this.bloqueos.put(bloqueante, l);
-		}
-	}
-
-	// un usuario sigue a otro
-	public void seguir(Usuario seguidor, Usuario seguido) throws java.rmi.RemoteException {
-		if (this.seguidos.containsKey(seguido)) {
-			this.seguidos.get(seguido).add(seguidor);
-		} else {
-			List<Usuario> l = new LinkedList<>();
-			l.add(seguidor);
-			this.seguidos.put(seguido, l);
-		}
+		return this.servicioDatos.getTrinos();
 	}
 
 	// test de la funcion bloquear. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Usuario>> getBloqueados() throws java.rmi.RemoteException {
-		return this.bloqueos;
+		return this.servicioDatos.getBloqueados();
 	}
 
-	// test de la funcion seguir. BORRAR DESPUÉS
-	public HashMap<Usuario, List<Usuario>> getSeguidos() throws java.rmi.RemoteException {
-		return this.seguidos;
+	// test de la funcion seguir abandonar. BORRAR DESPUÉS
+	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {
+		return this.servicioDatos.getSeguidores();
 	}
 }

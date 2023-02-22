@@ -25,12 +25,8 @@ public class Cliente {
 			// IMPORTAR LAS INTERFACES
 			System.out.println("Importando las interfaces...");
 			System.out.println();
-			// Se comunica con la interfaz
-			// String registro = "rmi://localhost:" + puerto + "/" +
-			// ServerInt.class.getCanonicalName();
 			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
 			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
-			// ServerInt h = (ServerInt)Naming.lookup(registro);
 			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
 			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
 			
@@ -97,12 +93,10 @@ public class Cliente {
 			}
 			
 			// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
-			System.out.println();
-			System.out.println("chequeando la correcta autenticación de usuarios...");
-			HashMap<String, Usuario> bbdd = servicioAutentificar.getBBDD();
-			for (Map.Entry<String, Usuario> entry : bbdd.entrySet()) {
-				entry.getValue().show();
-			}
+			
+			// CHEQUEANDO EL CORRECTO LOGUEO DE LOS USUARIOS
+			
+			// CHEQUEANDO EL CORRECTO BANEO DE LOS USUARIOS
 
 			// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
 			HashMap<Usuario, List<Trino>> trinosPublicados = servicioGestor.getTrinos();
@@ -114,7 +108,7 @@ public class Cliente {
 			
 			// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
 			System.out.println("Ri -> 1, 2; Ro -> 2, 3");
-			HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidos();
+			HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidores();
 			showSeguidos(s);
 
 		} catch (Exception e) {
@@ -134,7 +128,7 @@ public class Cliente {
 	public static void autentificar(AutentificarInt servicio, Usuario u) {
 		u.show();
 		try {
-			if (servicio.registro(u)) {
+			if (servicio.registrar(u)) {
 				System.out.println("el usuario se ha registrado correctamente");
 			} else {
 				System.out.println("ya existe un usuario registrado con nick: " + u.getNick());
