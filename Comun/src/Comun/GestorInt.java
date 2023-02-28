@@ -22,10 +22,13 @@ public interface GestorInt extends Remote {
 	public void desbloquear(Usuario lider, Usuario desbloqueado) throws java.rmi.RemoteException;
 
 	// un usuario se hace seguidor de otro
-	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException;
+	public void seguir(Usuario lider, Usuario seguidor, CallbackInt receptor) throws java.rmi.RemoteException;
 
 	// un seguidor abandona a su lider
 	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException;
+	
+	//Interface con Callback para pruebas
+	public void recibir(CallbackInt receptor) throws java.rmi.RemoteException;
 
 	// funciones de prueba. Borrar después
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;

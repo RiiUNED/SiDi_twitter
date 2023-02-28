@@ -2,7 +2,9 @@ package cliente;
 
 //import java.io.*;
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 //import java.util.Scanner;
 
@@ -29,73 +31,97 @@ public class Cliente {
 			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
 			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
 			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
+
+			// publicando las callbacks
+			System.out.println("Publicando las callbacks...");
+			System.out.println();
 			
-			//Especificar cliente
+			//-----
+			//registro en el puerto por defecto de rmi
+			Registry registry = LocateRegistry.getRegistry(puerto);
+			try {
+				registry.list();
+				System.out.println("se ha registrado el servicio callback en el puerto: "+puerto);
+				
+			} catch (Exception e) {
+				registry = LocateRegistry.createRegistry(puerto);
+				System.out.println("se ha creado el servicio callback en el puerto: "+puerto);
+			}
+			
+			CallbackInt servidorC = new CallbackImpl();
+			
+			servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
+			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
+			
+			for(String name : registry.list()) {
+				System.out.println(name);
+			}
+			//----
+
+			// Especificar cliente
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Cliente (1)Ricardo o Cliente (2)Roberto? ");
 			int opcion = scanner.nextInt();
-			
 
 			// Crear usuarios
 			List<List<Usuario>> u = crearUsuario();
 			List<Usuario> usuarios = u.get(0);
 			List<Usuario> bloqueados = u.get(1);
 			List<Usuario> seguidores = u.get(2);
-			
+
 			Usuario userRi = usuarios.get(0);
 			Usuario userRo = usuarios.get(1);
 
 			// Crear trinos
 			List<Trino> trinos = crearTrinos(usuarios);
-			
-			//Siguiendo usuarios
+
+			// Siguiendo usuarios
 			Usuario sgd1 = seguidores.get(0);
 			Usuario sgd2 = seguidores.get(1);
 			Usuario sgd3 = seguidores.get(2);
-			
-			
+
 			System.out.println("autenticando los usuarios...");
 			// AUTENTIFICAR USUARIOS
-			if(opcion==1) {
+			if (opcion == 1) {
 				autentificar(servicioAutentificar, userRi);
-				
+
 				// ENVIANDO TRINOS
 				System.out.println("enviando trinos...");
 				System.out.println();
-				
+
 				servicioGestor.enviar(userRi, trinos.get(0));
 				servicioGestor.enviar(userRi, trinos.get(1));
-				
+
 				// Bloqueando usuarios
 				System.out.println("bloqueando usuarios...");
 				System.out.println();
-				
+
 				Usuario blq1 = bloqueados.get(0);
 				Usuario blq2 = bloqueados.get(1);
 				Usuario blq3 = bloqueados.get(2);
 				servicioGestor.bloquear(userRi, blq1);
 				servicioGestor.bloquear(userRi, blq2);
 				servicioGestor.bloquear(userRi, blq3);
-				servicioGestor.seguir(sgd1, userRi);
-				servicioGestor.seguir(sgd2, userRi);
+				servicioGestor.seguir(userRo, userRi, servidorC);
+				servicioGestor.seguir(userRo, userRi, servidorC);
 			} else {
 				autentificar(servicioAutentificar, userRo);
-				
+
 				// ENVIANDO TRINOS
 				System.out.println("enviando trinos...");
 				System.out.println();
-				
+
 				servicioGestor.enviar(userRo, trinos.get(2));
 				servicioGestor.enviar(userRo, trinos.get(3));
 				servicioGestor.enviar(userRo, trinos.get(4));
-				servicioGestor.seguir(sgd2, userRo);
-				servicioGestor.seguir(sgd3, userRo);
+				servicioGestor.seguir(sgd2, userRo, servidorC);
+				servicioGestor.seguir(sgd3, userRo, servidorC);
 			}
-			
+
 			// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
-			
+
 			// CHEQUEANDO EL CORRECTO LOGUEO DE LOS USUARIOS
-			
+
 			// CHEQUEANDO EL CORRECTO BANEO DE LOS USUARIOS
 
 			// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
@@ -105,7 +131,7 @@ public class Cliente {
 			// CHEQUEANDO EL CORRECTO BLOQUEO DE USUARIOS
 			HashMap<Usuario, List<Usuario>> usuariosBloqueados = servicioGestor.getBloqueados();
 			showBloqueados(usuariosBloqueados);
-			
+
 			// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
 			System.out.println("Ri -> 1, 2; Ro -> 2, 3");
 			HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidores();
@@ -167,7 +193,7 @@ public class Cliente {
 		String messageRo3 = "ROBERTO publica su tercer trino.";
 		Trino trinoRo3 = new Trino(userRo, messageRo3);
 		trinos.add(trinoRo3);
-		
+
 		return trinos;
 	}
 
