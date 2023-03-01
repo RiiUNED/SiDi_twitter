@@ -18,133 +18,138 @@ import Comun.*;
 
 public class Cliente {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws RemoteException {
 
 		int puerto = Registry.REGISTRY_PORT;
 
-		try {
+		/*
+		 * try {
+		 * 
+		 * // IMPORTAR LAS INTERFACES
+		 * System.out.println("Importando las interfaces..."); System.out.println();
+		 * String registroAutentificar = "rmi://localhost:" + puerto + "/" +
+		 * AutentificarInt.class.getCanonicalName(); String registroGestor =
+		 * "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
+		 * AutentificarInt servicioAutentificar = (AutentificarInt)
+		 * Naming.lookup(registroAutentificar); GestorInt servicioGestor = (GestorInt)
+		 * Naming.lookup(registroGestor);
+		 * 
+		 * // publicando las callbacks
+		 * System.out.println("Publicando las callbacks..."); System.out.println();
+		 * 
+		 * // ----- // registro en el puerto por defecto de rmi Registry registry =
+		 * LocateRegistry.getRegistry(puerto); try { registry.list();
+		 * System.out.println("se ha registrado el servicio callback en el puerto: " +
+		 * puerto);
+		 * 
+		 * } catch (Exception e) { registry = LocateRegistry.createRegistry(puerto);
+		 * System.out.println("se ha creado el servicio callback en el puerto: " +
+		 * puerto); }
+		 * 
+		 * CallbackInt servidorC = new CallbackImpl();
+		 * 
+		 * servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
+		 * Naming.rebind("rmi://localhost:" + puerto + "/" +
+		 * CallbackInt.class.getCanonicalName(), servidorC);
+		 * 
+		 * for (String name : registry.list()) { System.out.println(name); } // ----
+		 */
 
-			// IMPORTAR LAS INTERFACES
-			System.out.println("Importando las interfaces...");
+		Configurar setup = configurar(puerto);
+		AutentificarInt servicioAutentificar = setup.getAutentificar();
+		GestorInt servicioGestor = setup.getGestor();
+		CallbackInt servidorC = setup.getServidor();
+
+		// Especificar cliente
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Cliente (1)Ricardo o Cliente (2)Roberto? ");
+		int opcion = scanner.nextInt();
+
+		// Crear usuarios
+		List<List<Usuario>> u = crearUsuario();
+		List<Usuario> usuarios = u.get(0);
+		List<Usuario> bloqueados = u.get(1);
+		List<Usuario> seguidores = u.get(2);
+
+		Usuario userRi = usuarios.get(0);
+		Usuario userRo = usuarios.get(1);
+
+		// Crear trinos
+		List<Trino> trinos = crearTrinos(usuarios);
+
+		// Siguiendo usuarios
+		Usuario sgd1 = seguidores.get(0);
+		Usuario sgd2 = seguidores.get(1);
+		Usuario sgd3 = seguidores.get(2);
+
+		System.out.println("autenticando los usuarios...");
+		// AUTENTIFICAR USUARIOS
+		if (opcion == 1) {
+			autentificar(servicioAutentificar, userRi);
+
+			// ENVIANDO TRINOS
+			System.out.println("enviando trinos...");
 			System.out.println();
-			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
-			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
-			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
-			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
 
-			// publicando las callbacks
-			System.out.println("Publicando las callbacks...");
+			servicioGestor.enviar(userRi, trinos.get(0));
+			servicioGestor.enviar(userRi, trinos.get(1));
+
+			// Bloqueando usuarios
+			System.out.println("bloqueando usuarios...");
 			System.out.println();
-			
-			//-----
-			//registro en el puerto por defecto de rmi
-			Registry registry = LocateRegistry.getRegistry(puerto);
-			try {
-				registry.list();
-				System.out.println("se ha registrado el servicio callback en el puerto: "+puerto);
-				
-			} catch (Exception e) {
-				registry = LocateRegistry.createRegistry(puerto);
-				System.out.println("se ha creado el servicio callback en el puerto: "+puerto);
-			}
-			
-			CallbackInt servidorC = new CallbackImpl();
-			
-			servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
-			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
-			
-			for(String name : registry.list()) {
-				System.out.println(name);
-			}
-			//----
 
-			// Especificar cliente
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("Cliente (1)Ricardo o Cliente (2)Roberto? ");
-			int opcion = scanner.nextInt();
+			Usuario blq1 = bloqueados.get(0);
+			Usuario blq2 = bloqueados.get(1);
+			Usuario blq3 = bloqueados.get(2);
+			servicioGestor.bloquear(userRi, blq1);
+			servicioGestor.bloquear(userRi, blq2);
+			servicioGestor.bloquear(userRi, blq3);
+			servicioGestor.seguir(userRo, userRi, servidorC);
+			servicioGestor.seguir(userRo, userRi, servidorC);
+		} else {
+			autentificar(servicioAutentificar, userRo);
 
-			// Crear usuarios
-			List<List<Usuario>> u = crearUsuario();
-			List<Usuario> usuarios = u.get(0);
-			List<Usuario> bloqueados = u.get(1);
-			List<Usuario> seguidores = u.get(2);
+			// ENVIANDO TRINOS
+			System.out.println("enviando trinos...");
+			System.out.println();
 
-			Usuario userRi = usuarios.get(0);
-			Usuario userRo = usuarios.get(1);
-
-			// Crear trinos
-			List<Trino> trinos = crearTrinos(usuarios);
-
-			// Siguiendo usuarios
-			Usuario sgd1 = seguidores.get(0);
-			Usuario sgd2 = seguidores.get(1);
-			Usuario sgd3 = seguidores.get(2);
-
-			System.out.println("autenticando los usuarios...");
-			// AUTENTIFICAR USUARIOS
-			if (opcion == 1) {
-				autentificar(servicioAutentificar, userRi);
-
-				// ENVIANDO TRINOS
-				System.out.println("enviando trinos...");
-				System.out.println();
-
-				servicioGestor.enviar(userRi, trinos.get(0));
-				servicioGestor.enviar(userRi, trinos.get(1));
-
-				// Bloqueando usuarios
-				System.out.println("bloqueando usuarios...");
-				System.out.println();
-
-				Usuario blq1 = bloqueados.get(0);
-				Usuario blq2 = bloqueados.get(1);
-				Usuario blq3 = bloqueados.get(2);
-				servicioGestor.bloquear(userRi, blq1);
-				servicioGestor.bloquear(userRi, blq2);
-				servicioGestor.bloquear(userRi, blq3);
-				servicioGestor.seguir(userRo, userRi, servidorC);
-				servicioGestor.seguir(userRo, userRi, servidorC);
-			} else {
-				autentificar(servicioAutentificar, userRo);
-
-				// ENVIANDO TRINOS
-				System.out.println("enviando trinos...");
-				System.out.println();
-
-				servicioGestor.enviar(userRo, trinos.get(2));
-				servicioGestor.enviar(userRo, trinos.get(3));
-				servicioGestor.enviar(userRo, trinos.get(4));
-				servicioGestor.seguir(sgd2, userRo, servidorC);
-				servicioGestor.seguir(sgd3, userRo, servidorC);
-			}
-
-			// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
-
-			// CHEQUEANDO EL CORRECTO LOGUEO DE LOS USUARIOS
-
-			// CHEQUEANDO EL CORRECTO BANEO DE LOS USUARIOS
-
-			// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
-			HashMap<Usuario, List<Trino>> trinosPublicados = servicioGestor.getTrinos();
-			showTrinos(trinosPublicados);
-
-			// CHEQUEANDO EL CORRECTO BLOQUEO DE USUARIOS
-			HashMap<Usuario, List<Usuario>> usuariosBloqueados = servicioGestor.getBloqueados();
-			showBloqueados(usuariosBloqueados);
-
-			// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
-			System.out.println("Ri -> 1, 2; Ro -> 2, 3");
-			HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidores();
-			showSeguidos(s);
-
-		} catch (Exception e) {
-
-			System.out.println("Excepcion: " + e);
-			e.printStackTrace();
-
+			servicioGestor.enviar(userRo, trinos.get(2));
+			servicioGestor.enviar(userRo, trinos.get(3));
+			servicioGestor.enviar(userRo, trinos.get(4));
+			servicioGestor.seguir(sgd2, userRo, servidorC);
+			servicioGestor.seguir(sgd3, userRo, servidorC);
 		}
 
-	}
+		// CHEQUEANDO LA CORRECTA AUTENTICACIÓN DE USUARIOS
+
+		// CHEQUEANDO EL CORRECTO LOGUEO DE LOS USUARIOS
+
+		// CHEQUEANDO EL CORRECTO BANEO DE LOS USUARIOS
+
+		// CHEQUEANDO LA CORRECTA PUBLICACIÓN DE LOS TRINOS
+		HashMap<Usuario, List<Trino>> trinosPublicados = servicioGestor.getTrinos();
+		showTrinos(trinosPublicados);
+
+		// CHEQUEANDO EL CORRECTO BLOQUEO DE USUARIOS
+		HashMap<Usuario, List<Usuario>> usuariosBloqueados = servicioGestor.getBloqueados();
+		showBloqueados(usuariosBloqueados);
+
+		// CHEQUEANDO EL CORRRECTO FUNCIONAMIENTO DE SEGUIDORES
+		System.out.println("Ri -> 1, 2; Ro -> 2, 3");
+		HashMap<Usuario, List<Usuario>> s = servicioGestor.getSeguidores();
+		showSeguidos(s);
+
+	}/*
+		 * catch(
+		 * 
+		 * Exception e) {
+		 * 
+		 * System.out.println("Excepcion: " + e); e.printStackTrace();
+		 * 
+		 * }
+		 */
+
+	//}
 
 	/*
 	 * Servico Autentificar. Registra a un usuario en la aplicacion
@@ -162,6 +167,53 @@ public class Cliente {
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public static Configurar configurar(int puerto) {
+		try {
+
+			// IMPORTAR LAS INTERFACES
+			System.out.println("Importando las interfaces...");
+			System.out.println();
+			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
+			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
+			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
+			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
+
+			// publicando las callbacks
+			System.out.println("Publicando las callbacks...");
+			System.out.println();
+
+			// -----
+			// registro en el puerto por defecto de rmi
+			Registry registry = LocateRegistry.getRegistry(puerto);
+			try {
+				registry.list();
+				System.out.println("se ha registrado el servicio callback en el puerto: " + puerto);
+
+			} catch (Exception e) {
+				registry = LocateRegistry.createRegistry(puerto);
+				System.out.println("se ha creado el servicio callback en el puerto: " + puerto);
+			}
+
+			CallbackInt servidorC = new CallbackImpl();
+
+			servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
+			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
+
+			for (String name : registry.list()) {
+				System.out.println(name);
+			}
+
+			return new Configurar(servicioAutentificar, servicioGestor, servidorC);
+
+		} catch (Exception e) {
+
+			System.out.println("Excepcion: " + e);
+			e.printStackTrace();
+			return new Configurar(null, null, null);
+
 		}
 	}
 
