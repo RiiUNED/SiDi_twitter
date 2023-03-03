@@ -27,12 +27,7 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	public GestorImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
-		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
-		try {
-			this.servicioDatos = (DatosInt) Naming.lookup(registroDatos);
-		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			e.printStackTrace();
-		}
+		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
 		this.receptores = new LinkedList<>();
 	}
 

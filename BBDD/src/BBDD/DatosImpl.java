@@ -39,6 +39,12 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 			return false;
 		}
 	}
+	
+	// devuelve la lista de los usuarios registrados en el sistema
+	@Override
+	public List<Usuario> getRegistrados() throws java.rmi.RemoteException{
+		return this.registrados;
+	}
 
 	// loguea usuarios en el sistema
 	@Override

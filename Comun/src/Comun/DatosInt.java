@@ -17,6 +17,9 @@ public interface DatosInt extends Remote {
 	// registra un usuario en el sistema
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
 	
+	//devuelve la lista de usuarios registrados en la BBDD
+	public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
+	
 	// loguea al usuario para perimitirle hacer uso del sistema
 	public boolean loguear(Usuario u) throws java.rmi.RemoteException;
 	

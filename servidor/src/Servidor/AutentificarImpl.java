@@ -27,12 +27,7 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 	public AutentificarImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
-		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
-		try {
-			this.servicioDatos = (DatosInt) Naming.lookup(registroDatos);
-		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			e.printStackTrace();
-		}
+		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
 	}
 
 	// registra un usuario en el sistema
