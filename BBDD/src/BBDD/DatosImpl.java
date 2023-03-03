@@ -32,7 +32,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	// registra usuarios en el sistema
 	@Override
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException {
-		if (!this.registrados.contains(u)) {
+		if (!AuxDatos.contains(registrados, u)) {
 			this.registrados.add(u);
 			return true;
 		} else {

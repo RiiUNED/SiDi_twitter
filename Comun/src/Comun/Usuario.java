@@ -57,10 +57,10 @@ public class Usuario implements Serializable{
     }
 	//mismo usuario
 	public Boolean equal(Usuario u) {
-		Boolean name = this.name.equals(u.getName());
-		Boolean nick = this.nick.equals(u.getNick());
-		Boolean pass = this.password.equals(u.getPassword());
+		//Boolean name = this.name.equals(u.getName());
+		return this.nick.equals(u.getNick());
+		//Boolean pass = this.password.equals(u.getPassword());
 		
-		return name && nick && pass;
+		//return name && nick && pass;
 	}
 }
