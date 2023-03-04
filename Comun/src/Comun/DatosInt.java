@@ -12,20 +12,26 @@ import java.util.List;
  *
  */
 public interface DatosInt extends Remote {
-	
+
 	// --------------------------- CONSUMIDAS POR EL SERVICIO AUTENTIFICACION
 	// registra un usuario en el sistema
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
-	
-	//devuelve la lista de usuarios registrados en la BBDD
+
+	// devuelve la lista de usuarios registrados en la BBDD
 	public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
-	
+
 	// loguea al usuario para perimitirle hacer uso del sistema
 	public boolean loguear(Usuario u) throws java.rmi.RemoteException;
-	
+
+	// devuelve la lista de usuarios loguados en la BBDD
+	public List<Usuario> getLogueados() throws java.rmi.RemoteException;
+
 	// banea a un usuario impidiendole hacer uso del sistema
 	public boolean banear(Usuario u) throws java.rmi.RemoteException;
-	
+
+	// chequea que un usuario esté registrado
+	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;
+
 	// --------------------------- CONSUMIDAS POR EL SERVICIO GESTOR
 	// --------------------------- trinar
 	// añade un mensaje

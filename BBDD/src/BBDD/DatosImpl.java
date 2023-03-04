@@ -32,24 +32,41 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	// registra usuarios en el sistema
 	@Override
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException {
-		if (!AuxDatos.contains(registrados, u)) {
+		if (!AuxDatos.contains(this.registrados, u)) {
 			this.registrados.add(u);
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	// devuelve la lista de los usuarios registrados en el sistema
 	@Override
-	public List<Usuario> getRegistrados() throws java.rmi.RemoteException{
+	public List<Usuario> getRegistrados() throws java.rmi.RemoteException {
 		return this.registrados;
+	}
+
+	// devuelve la lista de los usuarios logueados en el sistema
+	@Override
+	public List<Usuario> getLogueados() throws java.rmi.RemoteException{
+		return this.logueados;
+	}
+
+	// chequea si un usuario esta registrado
+	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
+		return AuxDatos.contains(this.registrados, u);
+	}
+
+	// chequea si un usuario esta logueado
+	public boolean checkLog(Usuario u) throws java.rmi.RemoteException {
+		return AuxDatos.contains(this.logueados, u);
 	}
 
 	// loguea usuarios en el sistema
 	@Override
 	public boolean loguear(Usuario u) throws java.rmi.RemoteException {
-		if (!this.logueados.contains(u)) {
+		// if (!AuxDatos.contains(this.logueados, u)) {
+		if (!this.checkLog(u)) {
 			this.logueados.add(u);
 			return true;
 		} else {
@@ -59,7 +76,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	// banea a un usuario impidiendole hacer uso del sistema
 	@Override
-	public boolean banear(Usuario u) throws java.rmi.RemoteException{
+	public boolean banear(Usuario u) throws java.rmi.RemoteException {
 		if (!this.baneados.contains(u)) {
 			this.logueados.add(u);
 			return true;

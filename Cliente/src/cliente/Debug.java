@@ -8,13 +8,11 @@ import Comun.*;
 //Esta clase va fuera del proyecto
 class Debug {
 	
-	public static void registrarUsuario(AutentificarInt servicioAutentificar, Scanner sc) throws RemoteException {
+	public static void registrarUsuario(AutentificarInt servicioAutentificar, int u) throws RemoteException {
 		// Crear usuario
         List<List<Usuario>> usuarios = crearUsuario();
         //Registrar usuario
-        System.out.println("Usuario a registrar: 1 Ri, 2 Ro, 3 B1.");
-        int opcion2 = sc.nextInt();
-        switch (opcion2) {
+        switch (u) {
         case 1:
         	Usuario userRi = usuarios.get(0).get(0);
         	//servicioAutentificar.registrar(userRi);
@@ -31,6 +29,32 @@ class Debug {
         	AuxCliente.registrar(servicioAutentificar, userB1);
         break;
         }
+	}
+	
+	public static boolean loguearUsuario(AutentificarInt servicioAutentificar, int u) throws RemoteException {
+		
+		// Crear usuario
+        List<List<Usuario>> usuarios = crearUsuario();
+        //Registrar usuario
+        
+        switch (u) {
+        case 1:
+        	Usuario userRi = usuarios.get(0).get(0);
+        	//servicioAutentificar.registrar(userRi);
+        	return AuxCliente.loguear(servicioAutentificar, userRi);
+        	//break;
+        case 2:
+        	Usuario userR2 = usuarios.get(0).get(1);
+        	//servicioAutentificar.registrar(userR2);
+        	return AuxCliente.loguear(servicioAutentificar, userR2);
+        	//break;
+        case 3:
+        	Usuario userB1 = usuarios.get(1).get(0);
+        	//servicioAutentificar.registrar(userB1);
+        	return AuxCliente.loguear(servicioAutentificar, userB1);
+        //break;
+        }
+		return false;
 	}
 	
 	// crear usuarios

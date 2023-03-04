@@ -16,48 +16,112 @@ import Comun.*;
  * autor: rsanchez628@alumno.uned.es Ricardo Sanchez
  */
 class AuxCliente {
-	
+
 	/*
-	 * funcion para ofertar al usuario el primer menu que describe el enunciado de la
-	 * practica
-	 * autor: rsanchez628@alumno.uned.es
+	 * funcion para ofertar al usuario el primer menu que describe el enunciado de
+	 * la practica autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu1(Configuracion setup) throws RemoteException { 
-	        Scanner sc = new Scanner(System.in);
-	        int opcion;
+	public static void menu1(Configuracion setup) throws RemoteException {
+		Scanner sc = new Scanner(System.in);
+		int opcion;
+		AutentificarInt servicioAutentificar = setup.getAutentificar();
 
-	        do {
-	            System.out.println("1. Registrar a un nuevo usuario");
-	            System.out.println("2. Hacer login");
-	            System.out.println("3. Salir");
+		do {
+			System.out.println("1. Registrar a un nuevo usuario");
+			System.out.println("2. Hacer login");
+			System.out.println("3. Salir");
 
-	            System.out.print("Ingrese su opción: ");
-	            opcion = sc.nextInt();
+			System.out.print("Ingrese su opción: ");
+			opcion = sc.nextInt();
 
-	            switch (opcion) {
-	                case 1:
-	                    System.out.println("Ha elegido registrar a un nuevo usuario.");
-	                    AutentificarInt servicioAutentificar = setup.getAutentificar();
-	                    Debug.registrarUsuario(servicioAutentificar, sc);	                   
-	                    break;
-	                case 2:
-	                    System.out.println("Ha elegido hacer login.");
-	                    // Aquí puedes agregar el código necesario para hacer login.
-	                    break;
-	                case 3:
-	                    System.out.println("Saliendo del menú...");
-	                    break;
-	                default:
-	                    System.out.println("Opción inválida, por favor intente nuevamente.");
-	                    break;
-	            }
-	        } while (opcion != 3);
-	        
-	        System.out.println("Fuera del menu.");
-	        sc.close();
-	    }
-	
+			switch (opcion) {
+			case 1:
+				System.out.println("Ha elegido registrar a un nuevo usuario.");
+				System.out.println("Elija usuario: 1 Ri, 2 Ro, 3 B1.");
+				int usr = sc.nextInt();
+				Debug.registrarUsuario(servicioAutentificar, usr);
+				break;
+			case 2:
+				System.out.println("Ha elegido hacer login.");
+				System.out.println("Elija usuario: 1 Ri, 2 Ro, 3 B1.");
+				usr = sc.nextInt();
+				if(Debug.loguearUsuario(servicioAutentificar, usr)) {
+					menu2(setup, sc);	
+				}				
+				break;
+			case 3:
+				System.out.println("Saliendo del menú...");
+				break;
+			default:
+				System.out.println("Opción inválida, por favor intente nuevamente.");
+				break;
+			}
+		} while (opcion != 3);
+
+		System.out.println("Fuera del menu.");
+		sc.close();
+	}
+
+	/*
+	 * funcion para ofertar al usuario el menu una vez logueado según el enunciado
+	 * de la practica autor: rsanchez628@alumno.uned.es
+	 */
+
+	public static void menu2(Configuracion setup, Scanner sc) throws RemoteException {
+		//Scanner sc = new Scanner(System.in);
+		int opcion;
+
+		do {
+			System.out.println("1. Información del usuario.");
+			System.out.println("2. Enviar trino");
+			System.out.println("3. Listar usuarios del sistema");
+			System.out.println("4. Seguir a");
+			System.out.println("5. Dejar de seguir a");
+			System.out.println("6. Borrar trino");
+			System.out.println("7. Salir (Logout)");
+
+			System.out.print("Ingrese su opción: ");
+			opcion = sc.nextInt();
+
+			switch (opcion) {
+			case 1:
+				System.out.println("Ha elegido ver la información del usuario.");
+				// Código
+				break;
+			case 2:
+				System.out.println("Ha elegido enviar trino.");
+				// Código
+				break;
+			case 3:
+				System.out.println("Ha elegido listar usuarios del sistema.");
+				// Código
+				break;
+			case 4:
+				System.out.println("Ha elegido seguir a.");
+				// Código
+				break;
+			case 5:
+				System.out.println("Ha elegido dejar de seguir a.");
+				// Código
+				break;
+			case 6:
+				System.out.println("Borrar trino.");
+				// Código
+				break;
+			case 7:
+				System.out.println("Saliendo del menú...");
+				break;
+			default:
+				System.out.println("Opción inválida, por favor intente nuevamente.");
+				break;
+			}
+		} while (opcion != 7);
+
+		System.out.println("Fuera del menu.");
+		//sc.close();
+	}
+
 	/*
 	 * Servico Autentificar. Registra a un usuario en la aplicacion
 	 * 
@@ -77,6 +141,33 @@ class AuxCliente {
 		}
 	}
 	
+	/*
+	 * Servico Autentificar. Loguea a un usuario en la aplicacion
+	 * 
+	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
+	 */
+	public static boolean loguear(AutentificarInt servicio, Usuario u) throws java.rmi.RemoteException{
+		//u.show();
+		if(!servicio.checkRegistro(u)) {
+			System.out.println("El usuario no se encuenta registrado");
+			return false;
+		} else {
+			try {
+				if (servicio.loguear(u)) {
+					System.out.println("el usuario se ha logueado correctamente");
+					return true;
+				} else {
+					System.out.println("ya existe un usuario logueado con nick: " + u.getNick());
+					return false;
+				}
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
+	}
+
 	/*
 	 * Servico Autentificar. Registra a un usuario en la aplicacion
 	 * 
@@ -147,7 +238,6 @@ class AuxCliente {
 	// -----------------------------------------------------
 	// BORRAR DESPUÉS
 
-
 	// --- funciones que muestran por consola la BBDD del servidor
 	public static void showTrinos(HashMap<Usuario, List<Trino>> tp) {
 		for (Map.Entry<Usuario, List<Trino>> entry : tp.entrySet()) {
@@ -188,6 +278,3 @@ class AuxCliente {
 		}
 	}
 }
-
-
-

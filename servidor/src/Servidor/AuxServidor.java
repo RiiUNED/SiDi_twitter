@@ -87,7 +87,7 @@ class AuxServidor {
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios logueados.");
-				// listar usuarios logueados.
+				showLog(d);
 				break;
 			case 4:
 				System.out.println("Ha elegido bloquear (banear) usuario.");
@@ -109,12 +109,23 @@ class AuxServidor {
 		System.out.println("Fuera del menu.");
 		sc.close();
 	}
-	
+
+	// muestra los usuarios registrados en la aplicación
 	public static void showRegistrados(DatosInt d) throws RemoteException {
 		List<Usuario> registrados = d.getRegistrados();
-		
-		for(Usuario usuario : registrados) {
-			usuario.show();		}
+
+		for (Usuario usuario : registrados) {
+			usuario.show();
 		}
 	}
 
+	// muestra los usuarios logueados en la aplicación
+	public static void showLog(DatosInt d) throws RemoteException {
+		List<Usuario> log = d.getLogueados();
+
+		for (Usuario usuario : log) {
+			usuario.show();
+		}
+	}
+
+}

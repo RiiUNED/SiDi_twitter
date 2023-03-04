@@ -46,6 +46,10 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 	public boolean banear(Usuario u) throws java.rmi.RemoteException{
 		return this.servicioDatos.banear(u);
 	}
+	
+	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException{
+		return this.servicioDatos.checkRegistro(u);
+	}
 
 	// auxiliar para pruebas. borrar después
 
