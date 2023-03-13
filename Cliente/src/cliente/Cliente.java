@@ -24,9 +24,6 @@ public class Cliente {
 
 		Configuracion setup = AuxCliente.configurar(puerto);
 		
-		GestorInt servicioGestor = setup.getGestor();
-		CallbackInt servidorC = setup.getServidor();
-		
 		AuxCliente.menu1(setup);
 		
 		System.out.println("Fuera de la aplicacion.");

@@ -21,10 +21,10 @@ public interface DatosInt extends Remote {
 	public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
 
 	// loguea al usuario para perimitirle hacer uso del sistema
-	public boolean loguear(Usuario u) throws java.rmi.RemoteException;
+	public boolean loguear(Sesion s) throws java.rmi.RemoteException;
 
 	// devuelve la lista de usuarios loguados en la BBDD
-	public List<Usuario> getLogueados() throws java.rmi.RemoteException;
+	public List<Sesion> getLogueados() throws java.rmi.RemoteException;
 
 	// banea a un usuario impidiendole hacer uso del sistema
 	public boolean banear(Usuario u) throws java.rmi.RemoteException;

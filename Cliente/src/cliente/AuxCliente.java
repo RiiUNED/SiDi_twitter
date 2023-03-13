@@ -26,6 +26,7 @@ class AuxCliente {
 		Scanner sc = new Scanner(System.in);
 		int opcion;
 		AutentificarInt servicioAutentificar = setup.getAutentificar();
+		List<Usuario> usuarios = Debug.crearUsuario();
 
 		do {
 			System.out.println("1. Registrar a un nuevo usuario");
@@ -38,17 +39,14 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido registrar a un nuevo usuario.");
-				System.out.println("Elija usuario: 1 Ri, 2 Ro, 3 B1.");
-				int usr = sc.nextInt();
-				Debug.registrarUsuario(servicioAutentificar, usr);
+				Debug.registrarUsuario(usuarios, servicioAutentificar, sc);
 				break;
 			case 2:
 				System.out.println("Ha elegido hacer login.");
-				System.out.println("Elija usuario: 1 Ri, 2 Ro, 3 B1.");
-				usr = sc.nextInt();
-				if(Debug.loguearUsuario(servicioAutentificar, usr)) {
-					menu2(setup, sc);	
-				}				
+				Sesion sesion = Debug.crearSesion(usuarios, sc, setup);
+				if (Debug.loguearUsuario(usuarios, servicioAutentificar, sesion)) {
+					menu2(usuarios, setup, sc, sesion);
+				}
 				break;
 			case 3:
 				System.out.println("Saliendo del menú...");
@@ -68,9 +66,11 @@ class AuxCliente {
 	 * de la practica autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu2(Configuracion setup, Scanner sc) throws RemoteException {
-		//Scanner sc = new Scanner(System.in);
+	public static void menu2(List<Usuario> usuarios, Configuracion setup, Scanner sc, Sesion sesion)
+			throws RemoteException {
+		// Scanner sc = new Scanner(System.in);
 		int opcion;
+		GestorInt serGestor = setup.getGestor();
 
 		do {
 			System.out.println("1. Información del usuario.");
@@ -87,11 +87,30 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido ver la información del usuario.");
-				// Código
+				sesion.getUser().show();
+				System.out.println("tiene como seguidores a: ");
+				HashMap<Usuario, List<Usuario>> seguidores = serGestor.getSeguidores();
+				List<Usuario> keys = new LinkedList<>(seguidores.keySet());
+				boolean follow = false;
+				for (Usuario k : keys) {
+					follow = false;
+					if (k.identico(sesion.getUser())) {
+						follow = true;
+						List<Usuario> misSeguidores = seguidores.get(k);
+						if (misSeguidores != null) {
+							for (Usuario seguidor : misSeguidores) {
+								seguidor.show();
+							}
+						}
+					}
+					if(!follow) {
+						System.out.println("sin seguidores");
+					}
+				}
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
-				// Código
+				Debug.trinar(sesion, serGestor, sc);
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios del sistema.");
@@ -99,7 +118,8 @@ class AuxCliente {
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
-				// Código
+				Usuario lider = Debug.elegirUsuario(usuarios, sc);
+				serGestor.seguir(sesion, lider);
 				break;
 			case 5:
 				System.out.println("Ha elegido dejar de seguir a.");
@@ -119,7 +139,7 @@ class AuxCliente {
 		} while (opcion != 7);
 
 		System.out.println("Fuera del menu.");
-		//sc.close();
+		// sc.close();
 	}
 
 	/*
@@ -140,20 +160,21 @@ class AuxCliente {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Servico Autentificar. Loguea a un usuario en la aplicacion
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	public static boolean loguear(AutentificarInt servicio, Usuario u) throws java.rmi.RemoteException{
-		//u.show();
-		if(!servicio.checkRegistro(u)) {
+	public static boolean loguear(AutentificarInt servicio, Sesion s) throws java.rmi.RemoteException {
+		// u.show();
+		Usuario u = s.getUser();
+		if (!servicio.checkRegistro(u)) {
 			System.out.println("El usuario no se encuenta registrado");
 			return false;
 		} else {
 			try {
-				if (servicio.loguear(u)) {
+				if (servicio.loguear(s)) {
 					System.out.println("el usuario se ha logueado correctamente");
 					return true;
 				} else {
@@ -178,6 +199,7 @@ class AuxCliente {
 		try {
 			if (servicio.registrar(u)) {
 				System.out.println("el usuario se ha registrado correctamente");
+
 			} else {
 				System.out.println("ya existe un usuario registrado con nick: " + u.getNick());
 			}

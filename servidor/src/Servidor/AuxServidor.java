@@ -121,11 +121,28 @@ class AuxServidor {
 
 	// muestra los usuarios logueados en la aplicación
 	public static void showLog(DatosInt d) throws RemoteException {
-		List<Usuario> log = d.getLogueados();
+		List<Sesion> log = d.getLogueados();
+		Usuario usuario;
 
-		for (Usuario usuario : log) {
+		for (Sesion sesion : log) {
+			usuario = sesion.getUser();
 			usuario.show();
 		}
 	}
+	/*
+	public static List<Usuario> getMisSeguidores(
+			HashMap<Usuario, List<Usuario>> seguidores, 
+			Usuario user){
+		List<Usuario> misSeguidores = new LinkedList<Usuario>();
+		
+		List<Usuario> llaves = new LinkedList<Usuario>(seguidores.keySet());
+		for(Usuario llave : llaves) {
+			if (llave.identico(user)){
+				misSeguidores = seguidores.get(llave);
+			}
+		}
+		
+		return misSeguidores;
+	}*/
 
 }

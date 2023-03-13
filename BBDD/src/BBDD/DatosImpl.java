@@ -18,21 +18,27 @@ import Comun.*;;
 
 public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
-	private List<Usuario> registrados = new LinkedList<>();
-	private List<Usuario> logueados = new LinkedList<>();
-	private List<Usuario> baneados = new LinkedList<>();
-	private HashMap<Usuario, List<Trino>> trinos = new HashMap<>();
-	private HashMap<Usuario, List<Usuario>> bloqueos = new HashMap<>();
-	private HashMap<Usuario, List<Usuario>> seguidores = new HashMap<>();
+	private List<Usuario> registrados;
+	private List<Sesion> logueados;
+	private List<Usuario> baneados;
+	private HashMap<Usuario, List<Trino>> trinos;
+	private HashMap<Usuario, List<Usuario>> bloqueos;
+	private HashMap<Usuario, List<Usuario>> seguidores;
 
 	protected DatosImpl() throws RemoteException {
 		super();
+		this.registrados = new LinkedList<>();
+		this.logueados = new LinkedList<>();
+		this.baneados = new LinkedList<>();
+		this.trinos = new HashMap<>();
+		this.bloqueos = new HashMap<>();
+		this.seguidores = new HashMap<>();
 	}
 
 	// registra usuarios en el sistema
 	@Override
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException {
-		if (!AuxDatos.contains(this.registrados, u)) {
+		if (!AuxDatos.containsU(this.registrados, u)) {
 			this.registrados.add(u);
 			return true;
 		} else {
@@ -48,26 +54,26 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	// devuelve la lista de los usuarios logueados en el sistema
 	@Override
-	public List<Usuario> getLogueados() throws java.rmi.RemoteException{
+	public List<Sesion> getLogueados() throws java.rmi.RemoteException{
 		return this.logueados;
 	}
 
 	// chequea si un usuario esta registrado
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
-		return AuxDatos.contains(this.registrados, u);
+		return AuxDatos.containsU(this.registrados, u);
 	}
 
 	// chequea si un usuario esta logueado
-	public boolean checkLog(Usuario u) throws java.rmi.RemoteException {
-		return AuxDatos.contains(this.logueados, u);
+	public boolean checkLog(Sesion s) throws java.rmi.RemoteException {
+		return AuxDatos.containsS(this.logueados, s);
 	}
 
 	// loguea usuarios en el sistema
 	@Override
-	public boolean loguear(Usuario u) throws java.rmi.RemoteException {
+	public boolean loguear(Sesion s) throws java.rmi.RemoteException {
 		// if (!AuxDatos.contains(this.logueados, u)) {
-		if (!this.checkLog(u)) {
-			this.logueados.add(u);
+		if (!this.checkLog(s)) {
+			this.logueados.add(s);
 			return true;
 		} else {
 			return false;
@@ -78,7 +84,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	@Override
 	public boolean banear(Usuario u) throws java.rmi.RemoteException {
 		if (!this.baneados.contains(u)) {
-			this.logueados.add(u);
+			this.baneados.add(u);
 			return true;
 		} else {
 			return false;
@@ -110,13 +116,18 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException {
-		if (this.seguidores.containsKey(lider)) {
-			this.seguidores.get(lider).add(seguidor);
+		if (Auxiliar.checkLlaves(this.seguidores, lider)) {
+			System.out.println("reutiliza lista");
+			List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
+			misSeguidores.add(seguidor);
+			//this.seguidores.get(lider).add(seguidor); //Aquí está el problema
 		} else {
 			List<Usuario> l = new LinkedList<>();
 			l.add(seguidor);
 			this.seguidores.put(lider, l);
 		}
+		System.out.println("Listado de seguidores");
+		Auxiliar.showSeguidores(this.seguidores);
 	}
 
 	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException {
@@ -137,4 +148,5 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {
 		return this.seguidores;
 	}
+
 }

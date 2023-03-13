@@ -1,16 +1,10 @@
 package Servidor;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
 
-import Comun.AutentificarInt;
-import Comun.DatosInt;
-import Comun.Usuario;
+import Comun.*;
 
 /*
  * Implementacion de los servicios autentificar
@@ -38,8 +32,8 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 
 	// Loguea a un usuario permitiendole hacer uso del sistema
 	@Override
-	public boolean loguear(Usuario u) throws java.rmi.RemoteException {
-		return this.servicioDatos.loguear(u);
+	public boolean loguear(Sesion s) throws java.rmi.RemoteException {
+		return this.servicioDatos.loguear(s);
 	}
 
 	// banea a un usuario impidiendole hacer uso del sistema

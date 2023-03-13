@@ -16,7 +16,7 @@ public interface AutentificarInt extends Remote {
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
 
 	// loguea al usuario para perimitirle hacer uso del sistema
-	public boolean loguear(Usuario u) throws java.rmi.RemoteException;
+	public boolean loguear(Sesion s) throws java.rmi.RemoteException;
 
 	// banea a un usuario impidiendole hacer uso del sistema
 	public boolean banear(Usuario u) throws java.rmi.RemoteException;

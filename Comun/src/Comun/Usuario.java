@@ -23,6 +23,10 @@ public class Usuario implements Serializable{
 		this.password = pass;
 	}
 	
+	public Usuario() {
+		// TODO Auto-generated constructor stub
+	}
+
 	//Metodos get and set
 	public String getName() {
 		return name;
@@ -56,7 +60,7 @@ public class Usuario implements Serializable{
                 '}';
     }
 	//mismo usuario
-	public Boolean equal(Usuario u) {
+	public Boolean identico(Usuario u) {
 		//Boolean name = this.name.equals(u.getName());
 		return this.nick.equals(u.getNick());
 		//Boolean pass = this.password.equals(u.getPassword());

@@ -22,21 +22,39 @@ import Comun.*;
 public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 
 	private DatosInt servicioDatos;
-	private List<CallbackInt> receptores;
+	private List<CallbackInt> activos;
+	private HashMap<Trino, List<Usuario>> pendientes;
 
 	public GestorImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
 		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
-		this.receptores = new LinkedList<>();
+		this.activos = new LinkedList<CallbackInt>();
+		this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
 
 	// el usuario envia un trino a sus seguidores
-	public void enviar(Usuario u, Trino trino) throws java.rmi.RemoteException {
+	public void trinar(Usuario u, Trino trino) throws java.rmi.RemoteException {
 		this.servicioDatos.trinar(u, trino);
+		
+		//List<Usuario> seguidores = this.servicioDatos.getSeguidores().get(u);
+		HashMap<Usuario, List<Usuario>> seguidores = this.servicioDatos.getSeguidores();
+		Auxiliar.showSeguidores(seguidores);
+		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
+		System.out.println("Size misSeguidores: " + misSeguidores.size());
+		List<Sesion> logueados = this.servicioDatos.getLogueados();
+		
+		for(Usuario seguidor : misSeguidores) {
+			for(Sesion s : logueados) {
+				if(seguidor.identico(s.getUser())) {
+					this.activos.add(s.getServidor());
+				} // aquí va la lógica de los pendientes
+			}
+		}
 
-		if (!this.receptores.isEmpty()) {
-			this.receptores.stream().forEach(new Consumer<>() {
+		if (!this.activos.isEmpty()) {
+			System.out.println("Size activos: "+ this.activos.size());
+			this.activos.stream().forEach(new Consumer<>() {
 
 				@Override
 				public void accept(CallbackInt t) {
@@ -46,10 +64,11 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}
-
 				}
 			});
 		}
+		this.activos.clear();
+		
 
 	}
 
@@ -64,9 +83,9 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	}
 
 	// un usuario sigue a otro
-	public void seguir(Usuario lider, Usuario seguidor, CallbackInt s) throws java.rmi.RemoteException {
+	public void seguir(Sesion sesion, Usuario lider) throws java.rmi.RemoteException {
+		Usuario seguidor = sesion.getUser();
 		this.servicioDatos.seguir(lider, seguidor);
-		this.receptores.add(s);
 	}
 
 	// un seguidor abandona a su lider
@@ -75,10 +94,6 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	}
 
 	// ------------------------------- PRUEBAS -----------------------------
-	// test callback
-	public void recibir(CallbackInt u) throws java.rmi.RemoteException {
-		this.receptores.add(u);
-	}
 
 	// test de la función enviar. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
