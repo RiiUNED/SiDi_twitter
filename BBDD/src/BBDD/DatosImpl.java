@@ -117,17 +117,14 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException {
 		if (Auxiliar.checkLlaves(this.seguidores, lider)) {
-			System.out.println("reutiliza lista");
 			List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
 			misSeguidores.add(seguidor);
-			//this.seguidores.get(lider).add(seguidor); //Aquí está el problema
 		} else {
 			List<Usuario> l = new LinkedList<>();
 			l.add(seguidor);
 			this.seguidores.put(lider, l);
 		}
-		System.out.println("Listado de seguidores");
-		Auxiliar.showSeguidores(this.seguidores);
+
 	}
 
 	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException {

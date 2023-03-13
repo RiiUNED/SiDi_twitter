@@ -8,6 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.function.Consumer;
 
 import Comun.*;
 
@@ -18,11 +19,9 @@ class AuxServidor {
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
 			registry.list();
-			System.out.println("se ha registrado el servidor en el puerto: " + puerto);
 
 		} catch (Exception e) {
 			registry = LocateRegistry.createRegistry(puerto);
-			System.out.println("se ha creado el servidor en el puerto: " + puerto);
 		}
 
 		// Exportar objeto
@@ -36,17 +35,8 @@ class AuxServidor {
 			Naming.rebind("rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName(), servidor1);
 			Naming.rebind("rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName(), servidor2);
 		} catch (RemoteException | MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// salida por consola de las interfaces que pueden consumir los clientes
-		System.out.println("Interfaces publicadas");
-		for (String name : registry.list()) {
-			System.out.println(name);
-
-		}
-
 	}
 
 	public static DatosInt getServicioDatos(int puerto) {
@@ -129,20 +119,39 @@ class AuxServidor {
 			usuario.show();
 		}
 	}
-	/*
-	public static List<Usuario> getMisSeguidores(
-			HashMap<Usuario, List<Usuario>> seguidores, 
-			Usuario user){
-		List<Usuario> misSeguidores = new LinkedList<Usuario>();
+	
+	public static List<CallbackInt> getActivos(
+			List<Usuario> misSeguidores,
+			List<Sesion> logueados){
 		
-		List<Usuario> llaves = new LinkedList<Usuario>(seguidores.keySet());
-		for(Usuario llave : llaves) {
-			if (llave.identico(user)){
-				misSeguidores = seguidores.get(llave);
+		List<CallbackInt> activos = new LinkedList<CallbackInt>();
+		
+		for(Usuario seguidor : misSeguidores) {
+			for(Sesion s : logueados) {
+				if(seguidor.identico(s.getUser())) {
+					activos.add(s.getServidor());
+				} 
 			}
 		}
 		
-		return misSeguidores;
-	}*/
+		return activos;
+	}
+	
+	public static void publicar (List<CallbackInt> l, Trino trino) {
+		if (!l.isEmpty()) {
+			l.stream().forEach(new Consumer<>() {
+
+				@Override
+				public void accept(CallbackInt t) {
+					// TODO Auto-generated method stub
+					try {
+						t.publicar(trino);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+	}
 
 }

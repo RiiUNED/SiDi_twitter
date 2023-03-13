@@ -68,7 +68,6 @@ class AuxCliente {
 
 	public static void menu2(List<Usuario> usuarios, Configuracion setup, Scanner sc, Sesion sesion)
 			throws RemoteException {
-		// Scanner sc = new Scanner(System.in);
 		int opcion;
 		GestorInt serGestor = setup.getGestor();
 
@@ -88,25 +87,6 @@ class AuxCliente {
 			case 1:
 				System.out.println("Ha elegido ver la información del usuario.");
 				sesion.getUser().show();
-				System.out.println("tiene como seguidores a: ");
-				HashMap<Usuario, List<Usuario>> seguidores = serGestor.getSeguidores();
-				List<Usuario> keys = new LinkedList<>(seguidores.keySet());
-				boolean follow = false;
-				for (Usuario k : keys) {
-					follow = false;
-					if (k.identico(sesion.getUser())) {
-						follow = true;
-						List<Usuario> misSeguidores = seguidores.get(k);
-						if (misSeguidores != null) {
-							for (Usuario seguidor : misSeguidores) {
-								seguidor.show();
-							}
-						}
-					}
-					if(!follow) {
-						System.out.println("sin seguidores");
-					}
-				}
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
@@ -139,7 +119,6 @@ class AuxCliente {
 		} while (opcion != 7);
 
 		System.out.println("Fuera del menu.");
-		// sc.close();
 	}
 
 	/*
@@ -213,37 +192,24 @@ class AuxCliente {
 		try {
 
 			// IMPORTAR LAS INTERFACES
-			System.out.println("Importando las interfaces...");
-			System.out.println();
 			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
 			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
 			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
 			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
 
-			// publicando las callbacks
-			System.out.println("Publicando las callbacks...");
-			System.out.println();
-
-			// -----
 			// registro en el puerto por defecto de rmi
 			Registry registry = LocateRegistry.getRegistry(puerto);
 			try {
 				registry.list();
-				System.out.println("se ha registrado el servicio callback en el puerto: " + puerto);
 
 			} catch (Exception e) {
 				registry = LocateRegistry.createRegistry(puerto);
-				System.out.println("se ha creado el servicio callback en el puerto: " + puerto);
 			}
 
 			CallbackInt servidorC = new CallbackImpl();
 
 			servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
 			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
-
-			for (String name : registry.list()) {
-				System.out.println(name);
-			}
 
 			return new Configuracion(servicioAutentificar, servicioGestor, servidorC);
 

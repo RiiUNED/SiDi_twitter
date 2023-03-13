@@ -28,11 +28,9 @@ public class BBDD {
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
 			registry.list();
-			System.out.println("se ha registrado la BBDD en el puerto: " + puerto);
 
 		} catch (Exception e) {
 			registry = LocateRegistry.createRegistry(puerto);
-			System.out.println("se ha creado la BBDD en el puerto: " + puerto);
 		}
 
 		// Exportar objeto
@@ -40,12 +38,6 @@ public class BBDD {
 		UnicastRemoteObject.unexportObject(servidorDatos, false);
 		servidorDatos = (DatosInt) UnicastRemoteObject.exportObject(servidorDatos, 0);
 		Naming.rebind("rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName(), servidorDatos);
-
-		// salida por consola de las interfaces que pueden consumir los clientes
-		System.out.println("Interfaces publicadas");
-		for (String name : registry.list()) {
-			System.out.println(name);
-		}
 	}
 	
 	/*

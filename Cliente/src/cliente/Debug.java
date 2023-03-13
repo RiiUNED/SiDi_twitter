@@ -48,8 +48,6 @@ class Debug {
 		List<Usuario> usuarios = new LinkedList<>();
 
 		// Crear usuarios
-		System.out.println("creando los usuarios...");
-		System.out.println();
 		String name = "Ricardo";
 		String nick = "I000";
 		String pass = "SiDi_2023";
@@ -149,7 +147,7 @@ class Debug {
 	}
 	
 	public static String elegirMensaje(List<String> mensajes, Scanner sc) {
-		System.out.println("Elija mensaje (1-12");
+		System.out.println("Elija mensaje (1-12)");
 		int op = sc.nextInt();
 		switch (op) {
 		case 1: {
