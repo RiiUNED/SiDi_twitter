@@ -36,6 +36,12 @@ public interface DatosInt extends Remote {
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;
 
 	// --------------------------- CONSUMIDAS POR EL SERVICIO GESTOR
+	// devuelve servidores de los usuarios activos
+	public List<CallbackInt> getActivos(Usuario u) throws java.rmi.RemoteException;
+	
+	// actualiza los trinos sin enviar a los usuarios desconectados
+	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException;
+	
 	// --------------------------- trinar
 	// añade un mensaje
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException;

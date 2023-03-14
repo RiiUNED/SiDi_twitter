@@ -20,35 +20,21 @@ import Comun.*;
 public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 
 	private DatosInt servicioDatos;
-	private HashMap<Trino, List<Usuario>> pendientes;
 
 	public GestorImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
 		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
-		this.pendientes = new HashMap<Trino, List<Usuario>>();
+		//this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
 
 	// el usuario envia un trino a sus seguidores
 	public void trinar(Usuario u, Trino trino) throws java.rmi.RemoteException {
 		this.servicioDatos.trinar(u, trino);
-		
-		HashMap<Usuario, List<Usuario>> seguidores = this.servicioDatos.getSeguidores();
-		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
-		List<Sesion> logueados = this.servicioDatos.getLogueados();
 		List<CallbackInt> activos = new LinkedList<CallbackInt>();
-		List<Usuario> inactivos = new LinkedList<Usuario>();
-		
-		activos = AuxServidor.getActivos(misSeguidores, logueados);
-		inactivos = AuxServidor.getInactivos(misSeguidores, logueados);
-		
-		System.out.println();
-		System.out.println("Usuarios inactivos");
-		this.pendientes.put(trino, inactivos);
-		
-		Auxiliar.showPendientes(this.pendientes);
-		
+		activos = this.servicioDatos.getActivos(u);
 		AuxServidor.publicar(activos, trino);
+		this.servicioDatos.updatePendientes(u, trino);
 
 	}
 

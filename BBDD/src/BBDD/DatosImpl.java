@@ -24,15 +24,47 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	private HashMap<Usuario, List<Trino>> trinos;
 	private HashMap<Usuario, List<Usuario>> bloqueos;
 	private HashMap<Usuario, List<Usuario>> seguidores;
+	private HashMap<Trino, List<Usuario>> pendientes;
 
 	protected DatosImpl() throws RemoteException {
 		super();
-		this.registrados = new LinkedList<>();
-		this.logueados = new LinkedList<>();
-		this.baneados = new LinkedList<>();
-		this.trinos = new HashMap<>();
-		this.bloqueos = new HashMap<>();
-		this.seguidores = new HashMap<>();
+		this.registrados = new LinkedList<Usuario>();
+		this.logueados = new LinkedList<Sesion>();
+		this.baneados = new LinkedList<Usuario>();
+		this.trinos = new HashMap<Usuario, List<Trino>>();
+		this.bloqueos = new HashMap<Usuario, List<Usuario>>();
+		this.seguidores = new HashMap<Usuario, List<Usuario>>();
+		this.pendientes = new HashMap<Trino, List<Usuario>>();
+	}
+
+	// Devuelve servidores de los usuarios activos
+	@Override
+	public List<CallbackInt> getActivos(Usuario u) throws java.rmi.RemoteException {
+
+		List<CallbackInt> activos = new LinkedList<CallbackInt>();
+		HashMap<Usuario, List<Usuario>> seguidores = this.seguidores;
+		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
+
+		for (Usuario seguidor : misSeguidores) {
+			for (Sesion s : this.logueados) {
+				if (seguidor.identico(s.getUser())) {
+					activos.add(s.getServidor());
+				}
+			}
+		}
+
+		return activos;
+	}
+
+	// actualiza los trinos sin enviar a los usuarios desconectados
+	@Override
+	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException {
+		List<Usuario> inactivos = new LinkedList<Usuario>();
+		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
+		
+		inactivos = AuxDatos.getInactivos(misSeguidores, logueados);
+		
+		this.pendientes.put(t, inactivos);
 	}
 
 	// registra usuarios en el sistema
@@ -54,7 +86,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	// devuelve la lista de los usuarios logueados en el sistema
 	@Override
-	public List<Sesion> getLogueados() throws java.rmi.RemoteException{
+	public List<Sesion> getLogueados() throws java.rmi.RemoteException {
 		return this.logueados;
 	}
 
@@ -79,14 +111,14 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 			return false;
 		}
 	}
-	
+
 	// desloguea al usuario cuando sale de la aplicación
 	@Override
-	public boolean desloguear(Sesion s) throws java.rmi.RemoteException{
-		
-		for(Iterator<Sesion> iter = this.logueados.iterator(); iter.hasNext();) {
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException {
+
+		for (Iterator<Sesion> iter = this.logueados.iterator(); iter.hasNext();) {
 			Sesion s1 = iter.next();
-			if(s1.identica(s)) {
+			if (s1.identica(s)) {
 				iter.remove();
 			}
 		}

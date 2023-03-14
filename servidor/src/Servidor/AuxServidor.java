@@ -120,41 +120,6 @@ class AuxServidor {
 		}
 	}
 
-	// Devuelve servidores de los seguidores logueados
-	public static List<CallbackInt> getActivos(List<Usuario> misSeguidores, List<Sesion> logueados) {
-
-		List<CallbackInt> activos = new LinkedList<CallbackInt>();
-
-		for (Usuario seguidor : misSeguidores) {
-			for (Sesion s : logueados) {
-				if (seguidor.identico(s.getUser())) {
-					activos.add(s.getServidor());
-				}
-			}
-		}
-
-		return activos;
-	}
-
-	// Devuelve usuarios de los seguidores no logueados
-	public static List<Usuario> getInactivos(List<Usuario> misSeguidores, List<Sesion> logueados) {
-
-		List<Usuario> inactivos = new LinkedList<Usuario>();
-		boolean conectado = false;
-
-		for (Usuario seguidor : misSeguidores) {
-			conectado = false;
-			for (Sesion logueado : logueados) {
-				if (seguidor.identico(logueado.getUser())) {
-					conectado = true;
-				}
-			}
-			if(!conectado) {inactivos.add(seguidor);}
-		}
-
-		return inactivos;
-	}
-
 	public static void publicar(List<CallbackInt> l, Trino trino) {
 		if (!l.isEmpty()) {
 			l.stream().forEach(new Consumer<>() {
