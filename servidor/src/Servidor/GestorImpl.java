@@ -20,7 +20,6 @@ import Comun.*;
 public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 
 	private DatosInt servicioDatos;
-	//private List<CallbackInt> activos;
 	private HashMap<Trino, List<Usuario>> pendientes;
 
 	public GestorImpl() throws RemoteException {
@@ -38,10 +37,16 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
 		List<Sesion> logueados = this.servicioDatos.getLogueados();
 		List<CallbackInt> activos = new LinkedList<CallbackInt>();
+		List<Usuario> inactivos = new LinkedList<Usuario>();
 		
 		activos = AuxServidor.getActivos(misSeguidores, logueados);
+		inactivos = AuxServidor.getInactivos(misSeguidores, logueados);
 		
-		// faltan las estructura y lógica de los pendientes
+		System.out.println();
+		System.out.println("Usuarios inactivos");
+		this.pendientes.put(trino, inactivos);
+		
+		Auxiliar.showPendientes(this.pendientes);
 		
 		AuxServidor.publicar(activos, trino);
 

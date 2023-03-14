@@ -129,7 +129,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException {
-		if (Auxiliar.checkLlaves(this.seguidores, lider)) {
+		if (Auxiliar.checkLlavesU(this.seguidores, lider)) {
 			List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
 			misSeguidores.add(seguidor);
 		} else {

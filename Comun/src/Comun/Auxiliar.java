@@ -17,6 +17,25 @@ public class Auxiliar {
 		}
 	}
 	
+	public static void showPendientes(HashMap<Trino, List<Usuario>> pendientes) {
+		List<Trino> llaves = new LinkedList<Trino>(pendientes.keySet());
+		for(Trino k : llaves) {
+			System.out.println("el trino");
+			k.showTrino();
+			System.out.println("no fue enviado a los usuarios");
+			List<Usuario> s = pendientes.get(k);
+			for(Usuario u : s) {
+				u.show();
+			}
+		}
+	}
+	
+	public static void showUsuarios(List<Usuario> l) {
+		for(Usuario u :l) {
+			u.show();
+		}
+	}
+	
 	public static void showSesiones(List<Sesion> sesiones) {
 		for(Sesion s : sesiones) {
 			s.show();
@@ -38,7 +57,7 @@ public class Auxiliar {
 		return misSeguidores;
 	}
 	
-	public static boolean checkLlaves(HashMap<Usuario, List<Usuario>> seguidores, Usuario lider) {
+	public static boolean checkLlavesU(HashMap<Usuario, List<Usuario>> seguidores, Usuario lider) {
 		boolean existe = false;
 		
 			List<Usuario> llaves = new LinkedList<Usuario>(seguidores.keySet());
