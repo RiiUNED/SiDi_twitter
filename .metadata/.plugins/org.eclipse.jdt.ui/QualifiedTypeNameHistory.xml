@@ -9,7 +9,6 @@
     <fullyQualifiedTypeName name="java.lang.String"/>
     <fullyQualifiedTypeName name="java.util.Map.Entry"/>
     <fullyQualifiedTypeName name="java.rmi.Remote"/>
-    <fullyQualifiedTypeName name="java.util.function.Consumer"/>
     <fullyQualifiedTypeName name="cliente.CallbackImpl"/>
     <fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
     <fullyQualifiedTypeName name="Comun.AutentificarInt"/>
@@ -24,9 +23,12 @@
     <fullyQualifiedTypeName name="Comun.Sesion"/>
     <fullyQualifiedTypeName name="java.io.Serializable"/>
     <fullyQualifiedTypeName name="cliente.Debug"/>
-    <fullyQualifiedTypeName name="Comun.CallbackInt"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
-    <fullyQualifiedTypeName name="java.util.LinkedList"/>
     <fullyQualifiedTypeName name="Comun.Usuario"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="java.util.function.Consumer"/>
     <fullyQualifiedTypeName name="Servidor.AuxServidor"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="Comun.CallbackInt"/>
+    <fullyQualifiedTypeName name="Comun.Auxiliar"/>
 </qualifiedTypeNameHistroy>

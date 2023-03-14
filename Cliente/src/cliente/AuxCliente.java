@@ -70,6 +70,7 @@ class AuxCliente {
 			throws RemoteException {
 		int opcion;
 		GestorInt serGestor = setup.getGestor();
+		AutentificarInt serAuten = setup.getAutentificar();
 
 		do {
 			System.out.println("1. Información del usuario.");
@@ -111,6 +112,11 @@ class AuxCliente {
 				break;
 			case 7:
 				System.out.println("Saliendo del menú...");
+				if(serAuten.desloguear(sesion)) {
+					System.out.println("Su sesión se ha cerrado correctamente");
+				} else {
+					System.out.println("Se ha producido un error cerrando su sesión.");
+				}
 				break;
 			default:
 				System.out.println("Opción inválida, por favor intente nuevamente.");

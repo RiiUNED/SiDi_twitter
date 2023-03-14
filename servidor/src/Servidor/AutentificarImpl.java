@@ -36,12 +36,18 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 		return this.servicioDatos.loguear(s);
 	}
 
+	// desloguea al usuario cuando sale de la aplicación
+	@Override
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException{
+		return this.servicioDatos.desloguear(s);
+	};
+
 	// banea a un usuario impidiendole hacer uso del sistema
-	public boolean banear(Usuario u) throws java.rmi.RemoteException{
+	public boolean banear(Usuario u) throws java.rmi.RemoteException {
 		return this.servicioDatos.banear(u);
 	}
-	
-	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException{
+
+	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
 		return this.servicioDatos.checkRegistro(u);
 	}
 

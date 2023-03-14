@@ -23,6 +23,9 @@ public interface DatosInt extends Remote {
 	// loguea al usuario para perimitirle hacer uso del sistema
 	public boolean loguear(Sesion s) throws java.rmi.RemoteException;
 
+	// desloguea al usuario cuando sale de la aplicación
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException;
+
 	// devuelve la lista de usuarios loguados en la BBDD
 	public List<Sesion> getLogueados() throws java.rmi.RemoteException;
 

@@ -52,7 +52,7 @@ public class BBDD {
 
 	        do {
 	            System.out.println("1. Información de la BBDD");
-	            System.out.println("2. Listar trinos (nick del propietario y timestamp");
+	            System.out.println("2. Listar trinos (nick del propietario y timestamp)");
 	            System.out.println("3. Salir");
 
 	            System.out.print("Ingrese su opción: ");

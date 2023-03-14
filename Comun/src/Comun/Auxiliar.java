@@ -17,6 +17,12 @@ public class Auxiliar {
 		}
 	}
 	
+	public static void showSesiones(List<Sesion> sesiones) {
+		for(Sesion s : sesiones) {
+			s.show();
+		}
+	}
+	
 	public static List<Usuario> getMisSeguidores(
 			HashMap<Usuario, List<Usuario>> seguidores, 
 			Usuario user){

@@ -24,4 +24,9 @@ public class Sesion implements Serializable{
 		Usuario u = s.getUser();
 		return this.user.identico(u);
 	}
+	
+	public void show() {
+		System.out.println("Sesión del usuario:");
+		this.getUser().show();
+	}
 }

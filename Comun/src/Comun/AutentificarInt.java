@@ -18,12 +18,14 @@ public interface AutentificarInt extends Remote {
 	// loguea al usuario para perimitirle hacer uso del sistema
 	public boolean loguear(Sesion s) throws java.rmi.RemoteException;
 
+	// desloguea al usuario cuando sale de la aplicación
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException;
+
 	// banea a un usuario impidiendole hacer uso del sistema
 	public boolean banear(Usuario u) throws java.rmi.RemoteException;
-	
+
 	// comprueba si un usuario está registrado
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;
 
-	
 	// Clases auxiliares para chequeao. BORRAR DESPUÉS
 }

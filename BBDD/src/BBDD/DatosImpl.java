@@ -79,6 +79,19 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 			return false;
 		}
 	}
+	
+	// desloguea al usuario cuando sale de la aplicación
+	@Override
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException{
+		
+		for(Iterator<Sesion> iter = this.logueados.iterator(); iter.hasNext();) {
+			Sesion s1 = iter.next();
+			if(s1.identica(s)) {
+				iter.remove();
+			}
+		}
+		return !AuxDatos.containsS(this.logueados, s);
+	};
 
 	// banea a un usuario impidiendole hacer uso del sistema
 	@Override
