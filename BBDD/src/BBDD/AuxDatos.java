@@ -42,5 +42,32 @@ class AuxDatos {
 
 		return inactivos;
 	}
+	
+	public static List<Trino> getTargetedKey (HashMap<Trino, List<Usuario>> pendientes, Usuario user){
+		List<Trino> sinPublicar = new LinkedList<Trino>();
+		List<Trino> llaves = new LinkedList<Trino>(pendientes.keySet());
+		
+		for(Trino k : llaves) {
+			List<Usuario> enEspera = pendientes.get(k);
+			if(containsU(enEspera, user)) {
+				sinPublicar.add(k);
+				pendientes.remove(k);
+				enEspera = removeU(enEspera, user);
+				pendientes.put(k, enEspera);
+			}
+		}
+		
+		return sinPublicar;
+	}
+	
+	public static List<Usuario> removeU(List<Usuario> usuarios, Usuario user) {
+		for (Iterator<Usuario> iter = usuarios.iterator(); iter.hasNext();) {
+			Usuario u1 = iter.next();
+			if (u1.identico(user)) {
+				iter.remove();
+			}
+		}
+		return usuarios;
+	}
 
 }

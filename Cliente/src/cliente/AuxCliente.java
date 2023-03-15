@@ -71,6 +71,8 @@ class AuxCliente {
 		int opcion;
 		GestorInt serGestor = setup.getGestor();
 		AutentificarInt serAuten = setup.getAutentificar();
+		
+		serGestor.updateTrinos(sesion);
 
 		do {
 			System.out.println("1. Información del usuario.");

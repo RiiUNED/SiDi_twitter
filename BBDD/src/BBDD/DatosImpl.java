@@ -61,9 +61,9 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException {
 		List<Usuario> inactivos = new LinkedList<Usuario>();
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
-		
+
 		inactivos = AuxDatos.getInactivos(misSeguidores, logueados);
-		
+
 		this.pendientes.put(t, inactivos);
 	}
 
@@ -111,6 +111,17 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 			return false;
 		}
 	}
+
+	// devuelve una lista de trinos que el usuario no publicó estando deslogueado
+	@Override
+	public List<Trino> getTrinos(Sesion s) throws java.rmi.RemoteException{
+		List<Trino> sinPublicar = new LinkedList<Trino>();
+		Usuario u = s.getUser();
+		
+		sinPublicar = AuxDatos.getTargetedKey(this.pendientes, u);
+		
+		return sinPublicar;
+	};
 
 	// desloguea al usuario cuando sale de la aplicación
 	@Override

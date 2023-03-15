@@ -35,4 +35,19 @@ public class Trino implements Serializable{
 		System.out.println(this.sender.getNick()+", tuiteó: ");
 		System.out.println(this.message);
 	}
+	
+	public boolean equals(Trino t2) {
+		boolean eq = false;
+		Usuario ut = this.sender;
+		String mt = this.message;
+		Usuario u2 = t2.getSender();
+		String m2 = t2.getMessage();
+		
+		boolean eq1 = ut.identico(u2);
+		boolean eq2 = mt.equals(m2);
+		
+		if(eq1 && eq2) {eq = true;}
+		
+		return eq;
+	}
 }

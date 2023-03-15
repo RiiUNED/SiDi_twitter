@@ -26,6 +26,9 @@ public interface GestorInt extends Remote {
 
 	// un seguidor abandona a su lider
 	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException;
+	
+	// publica trinos que quedaran pedientes mientras el usuario estuvo deslogueado
+	public void updateTrinos(Sesion s) throws java.rmi.RemoteException;
 
 	// funciones de prueba. Borrar después
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;

@@ -42,6 +42,9 @@ public interface DatosInt extends Remote {
 	// actualiza los trinos sin enviar a los usuarios desconectados
 	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException;
 	
+	// devuelve una lista de trinos que el usuario no publicó estando deslogueado
+	public List<Trino> getTrinos(Sesion s) throws java.rmi.RemoteException;
+	
 	// --------------------------- trinar
 	// añade un mensaje
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException;

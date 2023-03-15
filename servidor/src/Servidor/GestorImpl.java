@@ -37,6 +37,19 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 		this.servicioDatos.updatePendientes(u, trino);
 
 	}
+	
+	// el usuario actualiza el timeline
+	public void updateTrinos(Sesion s) throws java.rmi.RemoteException{
+		List<Trino> sinPublicar = servicioDatos.getTrinos(s);
+		
+		CallbackInt servidor = s.getServidor();
+		List<CallbackInt> l = new LinkedList<CallbackInt>();
+		l.add(servidor);
+		
+		for(Trino t : sinPublicar) {
+			AuxServidor.publicar(l, t);
+		}
+	};
 
 	// un usuario bloquea a otro
 	public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException {
