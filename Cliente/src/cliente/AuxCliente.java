@@ -90,9 +90,12 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido ver la información del usuario.");
-				HashMap<Usuario, List<Usuario>> s = serGestor.getSeguidores();
-				showSeguidos(s);
+				//HashMap<Usuario, List<Usuario>> s = serGestor.getSeguidores();
+				//showSeguidos(s);
 				//sesion.getUser().show();
+				System.out.println("Trinos");
+				HashMap<Usuario, List<Trino>> lt = serGestor.getTrinos();
+				showTrinos(lt);
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");

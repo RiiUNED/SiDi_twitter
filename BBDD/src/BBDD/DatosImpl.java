@@ -148,8 +148,10 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException {
-		if (this.trinos.containsKey(u)) {
-			this.trinos.get(u).add(t);
+		List<Usuario> parlantes = new LinkedList<Usuario>(this.trinos.keySet());
+		if (AuxDatos.containsU(parlantes, u)) {
+			List<Trino> lt = Auxiliar.getMisTrinos(this.trinos, u);
+			lt.add(t);
 		} else {
 			List<Trino> l = new LinkedList<>();
 			l.add(t);

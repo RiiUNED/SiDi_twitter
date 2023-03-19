@@ -57,6 +57,21 @@ public class Auxiliar {
 		return misSeguidores;
 	}
 	
+	public static List<Trino> getMisTrinos(
+			HashMap<Usuario, List<Trino>> trinos, 
+			Usuario user){
+		List<Trino> misTrinos = new LinkedList<Trino>();
+		
+		List<Usuario> llaves = new LinkedList<Usuario>(trinos.keySet());
+		for(Usuario llave : llaves) {
+			if (llave.identico(user)){
+				misTrinos = trinos.get(llave);
+			}
+		}
+		
+		return misTrinos;
+	}
+	
 	public static boolean checkLlavesU(HashMap<Usuario, List<Usuario>> seguidores, Usuario lider) {
 		boolean existe = false;
 		
