@@ -7,7 +7,6 @@
     <fullyQualifiedTypeName name="java.util.Map"/>
     <fullyQualifiedTypeName name="java.rmi.AccessException"/>
     <fullyQualifiedTypeName name="java.lang.String"/>
-    <fullyQualifiedTypeName name="java.util.Map.Entry"/>
     <fullyQualifiedTypeName name="java.rmi.Remote"/>
     <fullyQualifiedTypeName name="cliente.CallbackImpl"/>
     <fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
@@ -18,17 +17,19 @@
     <fullyQualifiedTypeName name="java.lang.System"/>
     <fullyQualifiedTypeName name="java.io.Serializable"/>
     <fullyQualifiedTypeName name="cliente.Debug"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="java.util.function.Consumer"/>
-    <fullyQualifiedTypeName name="Comun.CallbackInt"/>
     <fullyQualifiedTypeName name="Comun.AutentificarInt"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="Comun.Sesion"/>
-    <fullyQualifiedTypeName name="java.util.LinkedList"/>
     <fullyQualifiedTypeName name="Comun.Usuario"/>
-    <fullyQualifiedTypeName name="Servidor.AuxServidor"/>
     <fullyQualifiedTypeName name="Comun.DatosInt"/>
     <fullyQualifiedTypeName name="Comun.Auxiliar"/>
     <fullyQualifiedTypeName name="java.rmi.RemoteException"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="java.util.Iterator"/>
+    <fullyQualifiedTypeName name="java.util.Map.Entry"/>
     <fullyQualifiedTypeName name="BBDD.AuxDatos"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="Comun.CallbackInt"/>
+    <fullyQualifiedTypeName name="Servidor.AuxServidor"/>
 </qualifiedTypeNameHistroy>

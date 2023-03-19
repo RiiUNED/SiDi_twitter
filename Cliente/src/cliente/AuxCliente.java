@@ -97,7 +97,7 @@ class AuxCliente {
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios del sistema.");
-				// Código
+				listUser(serGestor);
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
@@ -272,5 +272,30 @@ class AuxCliente {
 				System.out.println();
 			}
 		}
+	}
+	
+	public static void showRegistrados(List<Usuario> l) {
+		System.out.println("Usuarios registrados en la aplicacion.");
+		for (Usuario e : l) {
+			e.show();
+			System.out.println();
+		}
+	}
+	
+	public static void showLogueados(List<Sesion> l) {
+		Usuario u;
+		System.out.println("Usuarios actualmente logueados en la aplicacion.");
+		for(Sesion s : l) {
+			u = s.getUser();
+			u.show();
+			System.out.println();
+		}
+	}
+	
+	public static void listUser(GestorInt servidor) throws RemoteException {
+		List<Usuario> lu = servidor.getRegistrados();
+		List<Sesion> ls = servidor.getLogueados();
+		showRegistrados(lu);
+		showLogueados(ls);
 	}
 }
