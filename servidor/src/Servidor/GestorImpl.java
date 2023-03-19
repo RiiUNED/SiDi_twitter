@@ -68,8 +68,8 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	}
 
 	// un seguidor abandona a su lider
-	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException {
-		this.servicioDatos.abandonar(lider, ex);
+	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException {
+		this.servicioDatos.abandonar(ex, lider);
 	}
 	
 	// devuelve la lista de los usuarios registrados en la aplicacion

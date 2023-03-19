@@ -61,7 +61,7 @@ public interface DatosInt extends Remote {
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException;
 
 	// abandonar a un lider
-	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException;
+	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException;
 
 	// --------------------------- test BORRAR DESPUÉS
 	// test de la función enviar. BORRAR DESPUÉS
@@ -72,5 +72,6 @@ public interface DatosInt extends Remote {
 
 	// test de las funciones seguir abandonar. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
+	
 
 }

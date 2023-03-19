@@ -25,7 +25,7 @@ public interface GestorInt extends Remote {
 	public void seguir(Sesion sesion, Usuario lider) throws java.rmi.RemoteException;
 
 	// un seguidor abandona a su lider
-	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException;
+	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException;
 
 	// publica trinos que quedaran pedientes mientras el usuario estuvo deslogueado
 	public void updateTrinos(Sesion s) throws java.rmi.RemoteException;

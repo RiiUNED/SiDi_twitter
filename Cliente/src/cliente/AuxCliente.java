@@ -71,6 +71,7 @@ class AuxCliente {
 		int opcion;
 		GestorInt serGestor = setup.getGestor();
 		AutentificarInt serAuten = setup.getAutentificar();
+		Usuario lider;
 		
 		serGestor.updateTrinos(sesion);
 
@@ -89,7 +90,9 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido ver la información del usuario.");
-				sesion.getUser().show();
+				HashMap<Usuario, List<Usuario>> s = serGestor.getSeguidores();
+				showSeguidos(s);
+				//sesion.getUser().show();
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
@@ -101,12 +104,13 @@ class AuxCliente {
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
-				Usuario lider = Debug.elegirUsuario(usuarios, sc);
+				lider = Debug.elegirUsuario(usuarios, sc);
 				serGestor.seguir(sesion, lider);
 				break;
 			case 5:
 				System.out.println("Ha elegido dejar de seguir a.");
-				// Código
+				lider = Debug.elegirUsuario(usuarios, sc);
+				serGestor.abandonar(sesion, lider);
 				break;
 			case 6:
 				System.out.println("Borrar trino.");

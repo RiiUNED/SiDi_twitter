@@ -183,8 +183,14 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	}
 
-	public void abandonar(Usuario lider, Usuario ex) throws java.rmi.RemoteException {
-		this.seguidores.get(lider).remove(ex);
+	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException {
+		Usuario exU = ex.getUser();
+		//this.seguidores.get(lider).remove(exU);
+		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
+		//System.out.println(misSeguidores.size());
+		this.seguidores.remove(lider);
+		AuxDatos.removeU(misSeguidores, exU);
+		//this.seguidores.put(lider, misSeguidores);
 	}
 
 	// test de la función trinar. BORRAR DESPUÉS
