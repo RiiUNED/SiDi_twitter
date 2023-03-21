@@ -21,6 +21,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	private List<Usuario> registrados;
 	private List<Sesion> logueados;
 	private List<Usuario> baneados;
+	private List<TrinoRegistrado> trinoR;
 	private HashMap<Usuario, List<Trino>> trinos;
 	private HashMap<Usuario, List<Usuario>> bloqueos;
 	private HashMap<Usuario, List<Usuario>> seguidores;
@@ -31,12 +32,20 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 		this.registrados = new LinkedList<Usuario>();
 		this.logueados = new LinkedList<Sesion>();
 		this.baneados = new LinkedList<Usuario>();
+		this.trinoR = new LinkedList<TrinoRegistrado>();
 		this.trinos = new HashMap<Usuario, List<Trino>>();
 		this.bloqueos = new HashMap<Usuario, List<Usuario>>();
 		this.seguidores = new HashMap<Usuario, List<Usuario>>();
 		this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
-
+	
+	@Override
+	public void imprimirTrinos() {
+		for(TrinoRegistrado tR : this.trinoR) {
+			tR.show();
+		}
+	}
+	
 	// Devuelve servidores de los usuarios activos
 	@Override
 	public List<CallbackInt> getActivos(Usuario u) throws java.rmi.RemoteException {
@@ -157,6 +166,10 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 			l.add(t);
 			this.trinos.put(u, l);
 		}
+		
+		String nick = u.getNick();
+		TrinoRegistrado tR = new TrinoRegistrado(nick);
+		this.trinoR.add(tR);
 	}
 
 	public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException {

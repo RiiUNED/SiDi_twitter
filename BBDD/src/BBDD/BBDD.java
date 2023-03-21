@@ -18,13 +18,13 @@ public class BBDD {
 		// registro en el puerto por defecto de rmi
 		int puerto = Registry.REGISTRY_PORT;
 		
-		configurar(puerto);
+		DatosInt servidor = configurar(puerto);
 		
-		menu();
+		menu(servidor);
 
 	}
 	
-	public static void configurar(int puerto) throws RemoteException, MalformedURLException {
+	public static DatosInt configurar(int puerto) throws RemoteException, MalformedURLException {
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
 			registry.list();
@@ -38,6 +38,8 @@ public class BBDD {
 		UnicastRemoteObject.unexportObject(servidorDatos, false);
 		servidorDatos = (DatosInt) UnicastRemoteObject.exportObject(servidorDatos, 0);
 		Naming.rebind("rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName(), servidorDatos);
+		
+		return servidorDatos;
 	}
 	
 	/*
@@ -46,7 +48,7 @@ public class BBDD {
 	 * autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu() throws RemoteException { 
+	public static void menu(DatosInt servidor) throws RemoteException { 
 	        Scanner sc = new Scanner(System.in);
 	        int opcion;
 
@@ -66,7 +68,7 @@ public class BBDD {
 	                    break;
 	                case 2:
 	                    System.out.println("Ha elegido listar trinos.");
-	                    // Aquí puedes agregar el código necesario para hacer login.
+	                    servidor.imprimirTrinos();
 	                    break;
 	                case 3:
 	                    System.out.println("Saliendo del menú...");

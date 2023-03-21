@@ -77,5 +77,7 @@ public interface DatosInt extends Remote {
 	 * que lo estén desloguados 
 	 */
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
+	
+	public void imprimirTrinos() throws java.rmi.RemoteException;
 
 }

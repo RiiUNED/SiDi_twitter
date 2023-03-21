@@ -13,16 +13,12 @@ class Debug {
 			GestorInt serGestor,
 			Scanner sc) {
 		Usuario user = sesion.getUser();
-		//List<String> mensajes = crearMensajes();
-		//String mensaje = elegirMensaje(mensajes, sc);
 
-		//Trino trino = new Trino(user, mensaje);
 		Trino trino = elegirTrino(user, sc);
 
 		try {
 			serGestor.trinar(user, trino);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
