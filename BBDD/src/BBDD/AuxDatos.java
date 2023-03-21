@@ -69,5 +69,15 @@ class AuxDatos {
 		}
 		return usuarios;
 	}
+	
+	public static List<Trino> removeT(List<Trino> trinos, Trino t) {
+		for (Iterator<Trino> iter = trinos.iterator(); iter.hasNext();) {
+			Trino t1 = iter.next();
+			if (t1.equals(t)) {
+				iter.remove();
+			}
+		}
+		return trinos;
+	}
 
 }

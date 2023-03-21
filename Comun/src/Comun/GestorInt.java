@@ -35,6 +35,11 @@ public interface GestorInt extends Remote {
 
 	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
 	public List<Sesion> getLogueados() throws java.rmi.RemoteException;
+	
+	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	 * que lo estén desloguados 
+	 */
+	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
 
 	// funciones de prueba. Borrar después
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;

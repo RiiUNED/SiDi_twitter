@@ -117,7 +117,9 @@ class AuxCliente {
 				break;
 			case 6:
 				System.out.println("Borrar trino.");
-				// Código
+				Usuario user = sesion.getUser();
+				Trino t = Debug.elegirTrino(user, sc);
+				serGestor.borrarTrino(sesion, t);
 				break;
 			case 7:
 				System.out.println("Saliendo del menú...");

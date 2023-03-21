@@ -73,5 +73,9 @@ public interface DatosInt extends Remote {
 	// test de las funciones seguir abandonar. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
 	
+	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	 * que lo estén desloguados 
+	 */
+	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
 
 }

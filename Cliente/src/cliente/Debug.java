@@ -13,10 +13,11 @@ class Debug {
 			GestorInt serGestor,
 			Scanner sc) {
 		Usuario user = sesion.getUser();
-		List<String> mensajes = crearMensajes();
-		String mensaje = elegirMensaje(mensajes, sc);
+		//List<String> mensajes = crearMensajes();
+		//String mensaje = elegirMensaje(mensajes, sc);
 
-		Trino trino = new Trino(user, mensaje);
+		//Trino trino = new Trino(user, mensaje);
+		Trino trino = elegirTrino(user, sc);
 
 		try {
 			serGestor.trinar(user, trino);
@@ -40,6 +41,15 @@ class Debug {
 
 		return AuxCliente.loguear(servicioAutentificar, s);
 
+	}
+	
+	public static Trino elegirTrino(Usuario user, Scanner sc) {
+		List<String> mensajes = crearMensajes();
+		String mensaje = elegirMensaje(mensajes, sc);
+
+		Trino trino = new Trino(user, mensaje);
+		
+		return trino;
 	}
 
 	// crear usuarios

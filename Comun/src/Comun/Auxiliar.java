@@ -42,6 +42,12 @@ public class Auxiliar {
 		}
 	}
 	
+	public static void showTrinos(List<Trino> trinos) {
+		for(Trino t : trinos) {
+			t.showTrino();
+		}
+	}
+	
 	public static List<Usuario> getMisSeguidores(
 			HashMap<Usuario, List<Usuario>> seguidores, 
 			Usuario user){

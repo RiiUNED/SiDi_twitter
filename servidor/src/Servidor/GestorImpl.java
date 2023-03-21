@@ -81,6 +81,13 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	public List<Sesion> getLogueados() throws java.rmi.RemoteException{
 		return this.servicioDatos.getLogueados();
 	}
+	
+	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	 * que lo estén desloguados 
+	 */
+	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException{
+		this.servicioDatos.borrarTrino(s, t);
+	}
 
 	// ------------------------------- PRUEBAS -----------------------------
 

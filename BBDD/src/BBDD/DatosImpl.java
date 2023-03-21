@@ -209,5 +209,31 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {
 		return this.seguidores;
 	}
+	
+	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	 * que lo estén desloguados 
+	 */
+	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException{
+		Usuario u = s.getUser();
+		borrarRegistro(u, t);
+		borrarPendientes(t);
+	}
+	
+	// bora un trino registrado en la BBDD
+	public void borrarRegistro(Usuario u, Trino t){
+		List<Trino> misTrinos = Auxiliar.getMisTrinos(this.trinos, u);
+		misTrinos = AuxDatos.removeT(misTrinos, t);
+		//Auxiliar.showTrinos(misTrinos);
+	}
+	
+	//evita que el trino le llegue a usuarios deslogueados
+	public void borrarPendientes(Trino t) {
+		List<Trino> llaves = new LinkedList<Trino>(this.pendientes.keySet());
+		for(Trino llave : llaves) {
+			if(llave.equals(t)) {this.pendientes.remove(llave);}
+		}
+	}
+	
+	//TESTAR BORRAR TRINO
 
 }
