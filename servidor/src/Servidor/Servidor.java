@@ -28,11 +28,13 @@ public class Servidor {
 		//registro en el puerto por defecto de rmi
 		int puerto = Registry.REGISTRY_PORT;
 		
-		AuxServidor.configurar(puerto);
+		GestorInt servidor = AuxServidor.configurar(puerto);
 		
 		DatosInt servicioDatos = AuxServidor.getServicioDatos(puerto);
 		
-		AuxServidor.menu(servicioDatos);
+		AuxServidor.menu(servidor, servicioDatos);
+		
+		System.exit(0);
 			
 	}
 }

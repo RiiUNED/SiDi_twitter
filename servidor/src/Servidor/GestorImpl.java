@@ -29,13 +29,17 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	}
 
 	// el usuario envia un trino a sus seguidores
-	public void trinar(Usuario u, Trino trino) throws java.rmi.RemoteException {
-		this.servicioDatos.trinar(u, trino);
-		List<CallbackInt> activos = new LinkedList<CallbackInt>();
-		activos = this.servicioDatos.getActivos(u);
-		AuxServidor.publicar(activos, trino);
-		this.servicioDatos.updatePendientes(u, trino);
-
+	public void trinar(Usuario u, Trino trino, boolean registrar) throws java.rmi.RemoteException {
+		if(servicioDatos.checkBan(u)) {
+			servicioDatos.putTrinoB(u, trino);
+		} else {
+			this.servicioDatos.trinar(u, trino);
+			List<CallbackInt> activos = new LinkedList<CallbackInt>();
+			activos = this.servicioDatos.getActivos(u);
+			AuxServidor.publicar(activos, trino);
+			this.servicioDatos.updatePendientes(u, trino);
+		}
+		if(registrar) {servicioDatos.registrarTrino(u);}
 	}
 	
 	// el usuario actualiza el timeline
@@ -51,6 +55,7 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 		}
 	};
 
+	/*
 	// un usuario bloquea a otro
 	public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException {
 		this.servicioDatos.bloquear(lider, bloqueado);
@@ -59,7 +64,7 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	// un usuario desbloquea a otro
 	public void desbloquear(Usuario lider, Usuario desbloqueado) throws java.rmi.RemoteException {
 		this.servicioDatos.desbloquear(lider, desbloqueado);
-	}
+	}*/
 
 	// un usuario sigue a otro
 	public void seguir(Sesion sesion, Usuario lider) throws java.rmi.RemoteException {
@@ -96,10 +101,11 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 		return this.servicioDatos.getTrinos();
 	}
 
+	/*
 	// test de la funcion bloquear. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Usuario>> getBloqueados() throws java.rmi.RemoteException {
 		return this.servicioDatos.getBloqueados();
-	}
+	}*/
 
 	// test de la funcion seguir abandonar. BORRAR DESPUÉS
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {

@@ -27,6 +27,7 @@ public class Cliente {
 		AuxCliente.menu1(setup);
 		
 		System.out.println("Fuera de la aplicacion.");
+		System.exit(0);
 
 	}
 	

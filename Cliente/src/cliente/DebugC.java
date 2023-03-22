@@ -6,18 +6,19 @@ import java.util.*;
 import Comun.*;
 
 //Esta clase va fuera del proyecto
-class Debug {
+class DebugC {
 
 	public static void trinar(
 			Sesion sesion, 
 			GestorInt serGestor,
 			Scanner sc) {
 		Usuario user = sesion.getUser();
-
+		boolean registrar = true;
 		Trino trino = elegirTrino(user, sc);
 
 		try {
-			serGestor.trinar(user, trino);
+			
+			serGestor.trinar(user, trino, registrar);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

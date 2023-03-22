@@ -13,13 +13,13 @@ import java.util.*;
 public interface GestorInt extends Remote {
 
 	// usuario envia un trino
-	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException;
+	public void trinar(Usuario u, Trino t, boolean registrar) throws java.rmi.RemoteException;
 
 	// un usuario bloquea a otro
-	public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException;
+	//public void bloquear(Usuario lider, Usuario bloqueado) throws java.rmi.RemoteException;
 
 	// un usuario desbloquea a otro
-	public void desbloquear(Usuario lider, Usuario desbloqueado) throws java.rmi.RemoteException;
+	//public void desbloquear(Usuario lider, Usuario desbloqueado) throws java.rmi.RemoteException;
 
 	// un usuario se hace seguidor de otro
 	public void seguir(Sesion sesion, Usuario lider) throws java.rmi.RemoteException;
@@ -44,7 +44,7 @@ public interface GestorInt extends Remote {
 	// funciones de prueba. Borrar después
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;
 
-	public HashMap<Usuario, List<Usuario>> getBloqueados() throws java.rmi.RemoteException;
+	//public HashMap<Usuario, List<Usuario>> getBloqueados() throws java.rmi.RemoteException;
 
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
 }

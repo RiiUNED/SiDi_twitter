@@ -26,7 +26,7 @@ class AuxCliente {
 		Scanner sc = new Scanner(System.in);
 		int opcion;
 		AutentificarInt servicioAutentificar = setup.getAutentificar();
-		List<Usuario> usuarios = Debug.crearUsuario();
+		List<Usuario> usuarios = DebugC.crearUsuario();
 
 		do {
 			System.out.println("1. Registrar a un nuevo usuario");
@@ -39,12 +39,12 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido registrar a un nuevo usuario.");
-				Debug.registrarUsuario(usuarios, servicioAutentificar, sc);
+				DebugC.registrarUsuario(usuarios, servicioAutentificar, sc);
 				break;
 			case 2:
 				System.out.println("Ha elegido hacer login.");
-				Sesion sesion = Debug.crearSesion(usuarios, sc, setup);
-				if (Debug.loguearUsuario(usuarios, servicioAutentificar, sesion)) {
+				Sesion sesion = DebugC.crearSesion(usuarios, sc, setup);
+				if (DebugC.loguearUsuario(usuarios, servicioAutentificar, sesion)) {
 					menu2(usuarios, setup, sc, sesion);
 				}
 				break;
@@ -99,7 +99,7 @@ class AuxCliente {
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
-				Debug.trinar(sesion, serGestor, sc);
+				DebugC.trinar(sesion, serGestor, sc);
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios del sistema.");
@@ -107,18 +107,18 @@ class AuxCliente {
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
-				lider = Debug.elegirUsuario(usuarios, sc);
+				lider = DebugC.elegirUsuario(usuarios, sc);
 				serGestor.seguir(sesion, lider);
 				break;
 			case 5:
 				System.out.println("Ha elegido dejar de seguir a.");
-				lider = Debug.elegirUsuario(usuarios, sc);
+				lider = DebugC.elegirUsuario(usuarios, sc);
 				serGestor.abandonar(sesion, lider);
 				break;
 			case 6:
 				System.out.println("Borrar trino.");
 				Usuario user = sesion.getUser();
-				Trino t = Debug.elegirTrino(user, sc);
+				Trino t = DebugC.elegirTrino(user, sc);
 				serGestor.borrarTrino(sesion, t);
 				break;
 			case 7:

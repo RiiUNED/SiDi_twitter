@@ -21,6 +21,8 @@ public class BBDD {
 		DatosInt servidor = configurar(puerto);
 		
 		menu(servidor);
+		
+		System.exit(0);
 
 	}
 	
@@ -63,8 +65,7 @@ public class BBDD {
 	            switch (opcion) {
 	                case 1:
 	                    System.out.println("Ha elegido información de la BBDD.");
-	                    //Código necesario para la info de la BBDD
-	                    
+	                    servidor.info();
 	                    break;
 	                case 2:
 	                    System.out.println("Ha elegido listar trinos.");

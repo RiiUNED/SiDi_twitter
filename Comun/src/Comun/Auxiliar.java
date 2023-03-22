@@ -78,13 +78,24 @@ public class Auxiliar {
 		return misTrinos;
 	}
 	
-	public static boolean checkLlavesU(HashMap<Usuario, List<Usuario>> seguidores, Usuario lider) {
+	public static boolean checkLlavesUU(HashMap<Usuario, List<Usuario>> seguidores, Usuario lider) {
 		boolean existe = false;
 		
 			List<Usuario> llaves = new LinkedList<Usuario>(seguidores.keySet());
 			
 			for(Usuario llave : llaves) {
 				existe = existe || llave.identico(lider);
+			}
+		return existe;
+	}
+	
+	public static boolean checkLlavesUT(HashMap<Usuario, List<Trino>> trinosB, Usuario u) {
+		boolean existe = false;
+		
+			List<Usuario> llaves = new LinkedList<Usuario>(trinosB.keySet());
+			
+			for(Usuario llave : llaves) {
+				existe = existe || llave.identico(u);
 			}
 		return existe;
 	}

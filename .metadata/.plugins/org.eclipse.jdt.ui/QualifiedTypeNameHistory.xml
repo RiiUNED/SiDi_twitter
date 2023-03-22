@@ -26,11 +26,14 @@
     <fullyQualifiedTypeName name="Comun.GestorInt"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="Comun.Sesion"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="cliente.Debug"/>
     <fullyQualifiedTypeName name="Comun.Usuario"/>
     <fullyQualifiedTypeName name="Comun.Trino"/>
     <fullyQualifiedTypeName name="BBDD.AuxDatos"/>
-    <fullyQualifiedTypeName name="java.util.LinkedList"/>
     <fullyQualifiedTypeName name="Comun.Auxiliar"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="BBDD.DatosImpl"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="java.time.Instant"/>
+    <fullyQualifiedTypeName name="BBDD.TrinoRegistrado"/>
 </qualifiedTypeNameHistroy>

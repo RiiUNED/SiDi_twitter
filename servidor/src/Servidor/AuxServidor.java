@@ -14,7 +14,7 @@ import Comun.*;
 
 class AuxServidor {
 
-	public static void configurar(int puerto) throws RemoteException {
+	public static GestorInt configurar(int puerto) throws RemoteException {
 
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
@@ -36,7 +36,9 @@ class AuxServidor {
 			Naming.rebind("rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName(), servidor2);
 		} catch (RemoteException | MalformedURLException e) {
 			e.printStackTrace();
+			return servidor2;
 		}
+		return servidor2;
 	}
 
 	public static DatosInt getServicioDatos(int puerto) {
@@ -50,8 +52,30 @@ class AuxServidor {
 			return servicioDatos;
 		}
 	}
+	
+	public static void banear(DatosInt d, Usuario u) throws RemoteException{
+		if(d.banear(u)) {
+			u.show();
+			System.out.println("ha sido baneado");
+		} else {
+			u.show();
+			System.out.println("ya estaba baneado");
+		}
+		
+	}
+	
+	public static void unban(
+			GestorInt servidor, 
+			DatosInt d, 
+			Usuario u) throws RemoteException{
+		List<Trino> trinosB = d.unban(u);
+		
+		for(Trino t : trinosB) {
+			servidor.trinar(u, t, false);
+		}
+	}
 
-	public static void menu(DatosInt d) throws RemoteException {
+	public static void menu(GestorInt servidor, DatosInt d) throws RemoteException {
 		Scanner sc = new Scanner(System.in);
 		int opcion;
 
@@ -81,11 +105,15 @@ class AuxServidor {
 				break;
 			case 4:
 				System.out.println("Ha elegido bloquear (banear) usuario.");
-				// listar usuarios registrados.
+				List<Usuario> lu = DebugS.crearUsuario();
+				Usuario u = DebugS.elegirUsuario(lu, sc);
+				banear(d, u);
 				break;
 			case 5:
 				System.out.println("Ha elegido desbloquear usuario.");
-				// desbloqueo de usuario
+				List<Usuario> lud = DebugS.crearUsuario();
+				Usuario ud = DebugS.elegirUsuario(lud, sc);
+				unban(servidor, d, ud);
 				break;
 			case 6:
 				System.out.println("Saliendo del menú...");
