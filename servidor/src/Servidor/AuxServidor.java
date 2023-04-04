@@ -1,3 +1,7 @@
+/**
+ * Autor:	Ricardo Sanchez
+ * Email:	rsanchez628@alumno.uned.es
+ */
 package Servidor;
 
 import java.net.MalformedURLException;
@@ -10,7 +14,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.function.Consumer;
 
-import Comun.*;
+import Interfaces.*;
+import Datos.*;
 
 class AuxServidor {
 
@@ -89,6 +94,7 @@ class AuxServidor {
 
 			System.out.print("Ingrese su opción: ");
 			opcion = sc.nextInt();
+			sc.nextLine();
 
 			switch (opcion) {
 			case 1:

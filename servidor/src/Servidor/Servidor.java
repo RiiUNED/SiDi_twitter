@@ -4,7 +4,7 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.util.HashMap;
 
-import Comun.*;
+import Interfaces.*;
 
 import java.rmi.registry.Registry.*;
 import java.rmi.registry.LocateRegistry;

@@ -1,11 +1,37 @@
-package Comun;
+/*
+ * Autor:	Ricardo Sanchez
+ * email:	rsanchez628@alumno.uned.es
+ */
 
-import java.util.*;;
+package Servicios;
 
+import java.util.*;
+
+import Datos.*;
+
+//Clase con funciones que dan servicio a los distintos procesos
 public class Auxiliar {
+	
+	/*
+	 * Recibe un texto con una pregunta y devuelve la respuesta que da
+	 * el usuario por consola
+	 * @param:
+	 * texto:	texto con la pregunta que vera el usuario en consola
+	 * sc:		scanner del sistema
+	 * @return:	string con respuesta del usuario
+	 */
+	public static String getString(Scanner sc, String texto) {
+		String data = null;
+		System.out.println(texto);
+		data = sc.nextLine();
+		//sc.nextLine();
+		//sc.nextInt();
+		return data;
+	}
 	
 	public static void showSeguidores(HashMap<Usuario, List<Usuario>> seguidores) {
 		List<Usuario> llaves = new LinkedList<Usuario>(seguidores.keySet());
+		System.out.println("Mostrando seguidores");
 		for(Usuario k : llaves) {
 			System.out.println("el usuario");
 			k.show();

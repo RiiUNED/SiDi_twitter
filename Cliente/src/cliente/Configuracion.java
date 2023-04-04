@@ -1,6 +1,6 @@
 package cliente;
 
-import Comun.*;
+import Interfaces.*;
 
 public class Configuracion {
 	

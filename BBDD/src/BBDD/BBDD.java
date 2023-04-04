@@ -9,7 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Scanner;
 
-import Comun.*;
+import Interfaces.*;
 
 public class BBDD {
 
@@ -61,6 +61,7 @@ public class BBDD {
 
 	            System.out.print("Ingrese su opción: ");
 	            opcion = sc.nextInt();
+	            sc.nextLine();
 
 	            switch (opcion) {
 	                case 1:

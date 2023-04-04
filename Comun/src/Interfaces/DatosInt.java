@@ -1,8 +1,10 @@
-package Comun;
+package Interfaces;
 
 import java.rmi.Remote;
 import java.util.HashMap;
 import java.util.List;
+
+import Datos.*;
 
 /**
  * Interfaz con los servicios Datos de la BBDD que serán consumidos por el
@@ -37,6 +39,9 @@ public interface DatosInt extends Remote {
 
 	// chequea que un usuario esté registrado
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;
+
+	// devuelve el usuario registrado del que se le pase nick
+	public Usuario getUser(String nick) throws java.rmi.RemoteException;
 
 	// --------------------------- CONSUMIDAS POR EL SERVICIO GESTOR
 	// devuelve servidores de los usuarios activos
@@ -95,7 +100,7 @@ public interface DatosInt extends Remote {
 
 	// registra el trino como de un usuario baneado
 	public void putTrinoB(Usuario u, Trino t) throws java.rmi.RemoteException;
-	
+
 	// registra el trino con timestamp en la BBDD
 	public void registrarTrino(Usuario u) throws java.rmi.RemoteException;
 

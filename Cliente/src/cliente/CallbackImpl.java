@@ -1,6 +1,7 @@
 package cliente;
 
-import Comun.*;
+import Interfaces.*;
+import Datos.*;
 
 public class CallbackImpl implements CallbackInt{
 	

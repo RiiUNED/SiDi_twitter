@@ -8,7 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 //import java.util.Scanner;
 
-import Comun.*;
+import Interfaces.*;
 
 /*
  * La clase representa un cliente de objeto distribuido

@@ -1,3 +1,7 @@
+/**
+ * Autor: 	Ricardo Sanchez
+ * Email:	rsanchez628@alumno.uned.es
+ */
 package Servidor;
 
 import java.rmi.*;
@@ -6,7 +10,8 @@ import java.rmi.server.*;
 
 import java.util.*;
 
-import Comun.*;
+import Interfaces.*;
+import Datos.*;
 
 /*Implementacion de los servicios Gestor
  * enviar trino
@@ -78,14 +83,14 @@ public class GestorImpl extends UnicastRemoteObject implements GestorInt {
 	}
 	
 	// devuelve la lista de los usuarios registrados en la aplicacion
-	public List<Usuario> getRegistrados() throws java.rmi.RemoteException{
-		return this.servicioDatos.getRegistrados();
-	}
+	//public List<Usuario> getRegistrados() throws java.rmi.RemoteException{
+	//	return this.servicioDatos.getRegistrados();
+	//}
 
 	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
-	public List<Sesion> getLogueados() throws java.rmi.RemoteException{
-		return this.servicioDatos.getLogueados();
-	}
+	//public List<Sesion> getLogueados() throws java.rmi.RemoteException{
+	//	return this.servicioDatos.getLogueados();
+	//}
 	
 	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
 	 * que lo estén desloguados 

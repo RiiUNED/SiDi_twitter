@@ -1,10 +1,16 @@
+/**
+ * Autor:	Ricardo Sanchez
+ * Email:	rsanchez@alumno.uned.es
+ */
 package Servidor;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
-import Comun.*;
+import Interfaces.*;
+import Datos.*;
 
 /*
  * Implementacion de los servicios autentificar
@@ -24,6 +30,12 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
 	}
 
+	// devuelve la lista de los usuarios registrados en la aplicacion
+	@Override
+	public List<Usuario> getRegistrados() throws java.rmi.RemoteException {
+		return this.servicioDatos.getRegistrados();
+	}
+
 	// registra un usuario en el sistema
 	@Override
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException {
@@ -38,19 +50,30 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 
 	// desloguea al usuario cuando sale de la aplicación
 	@Override
-	public boolean desloguear(Sesion s) throws java.rmi.RemoteException{
+	public boolean desloguear(Sesion s) throws java.rmi.RemoteException {
 		return this.servicioDatos.desloguear(s);
 	};
 
 	// banea a un usuario impidiendole hacer uso del sistema
+	@Override
 	public boolean banear(Usuario u) throws java.rmi.RemoteException {
 		return this.servicioDatos.banear(u);
 	}
 
+	@Override
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
 		return this.servicioDatos.checkRegistro(u);
 	}
 
-	// auxiliar para pruebas. borrar después
+	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
+	@Override
+	public List<Sesion> getLogueados() throws java.rmi.RemoteException {
+		return this.servicioDatos.getLogueados();
+	}
+	
+	//devuelve el usuario registrado del que se le pase nick
+		public Usuario getUser(String nick) throws java.rmi.RemoteException{
+			return this.servicioDatos.getUser(nick);
+		}
 
 }

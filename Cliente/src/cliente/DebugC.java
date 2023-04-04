@@ -1,45 +1,27 @@
+/*
 package cliente;
 
 import java.rmi.RemoteException;
 import java.util.*;
 
-import Comun.*;
+import Interfaces.*;
+import Datos.*;
 
 //Esta clase va fuera del proyecto
 class DebugC {
 
-	public static void trinar(
-			Sesion sesion, 
-			GestorInt serGestor,
-			Scanner sc) {
-		Usuario user = sesion.getUser();
-		boolean registrar = true;
-		Trino trino = elegirTrino(user, sc);
+	
 
-		try {
-			
-			serGestor.trinar(user, trino, registrar);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void registrarUsuario(
-			List<Usuario> usuarios, 
-			AutentificarInt servicioAutentificar, 
-			Scanner sc)
-			throws RemoteException {
-		Usuario u = elegirUsuario(usuarios, sc);
-		AuxCliente.registrar(servicioAutentificar, u);
-	}
-
+	
+/*
 	public static boolean loguearUsuario(List<Usuario> usuarios, AutentificarInt servicioAutentificar, Sesion s)
 			throws RemoteException {
 
 		return AuxCliente.loguear(servicioAutentificar, s);
 
 	}
-	
+	*/
+/*
 	public static Trino elegirTrino(Usuario user, Scanner sc) {
 		List<String> mensajes = crearMensajes();
 		String mensaje = elegirMensaje(mensajes, sc);
@@ -200,14 +182,5 @@ class DebugC {
 
 	}
 
-	public static Sesion crearSesion(
-			List<Usuario> usuarios, 
-			Scanner sc, 
-			Configuracion setup) {
-		Usuario u = elegirUsuario(usuarios, sc);
-		CallbackInt s = setup.getServidor();
-		Sesion sesion = new Sesion(u, s);
-		return sesion;
-	}
-
 }
+*/

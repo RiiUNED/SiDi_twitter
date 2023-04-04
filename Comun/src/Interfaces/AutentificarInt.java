@@ -1,7 +1,9 @@
-package Comun;
+package Interfaces;
 
 import java.rmi.*;
 import java.util.*;
+
+import Datos.*;
 
 /*
  * Interfaz con los servicios Auntentificar que serán consumidos 
@@ -27,5 +29,12 @@ public interface AutentificarInt extends Remote {
 	// comprueba si un usuario está registrado
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;
 
-	// Clases auxiliares para chequeao. BORRAR DESPUÉS
+	// devuelve la lista de los usuarios registrados en la aplicacion
+	public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
+
+	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
+	public List<Sesion> getLogueados() throws java.rmi.RemoteException;
+	
+	//devuelve el usuario registrado del que se le pase nick
+	public Usuario getUser(String nick) throws java.rmi.RemoteException;
 }

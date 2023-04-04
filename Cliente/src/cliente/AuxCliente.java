@@ -1,3 +1,7 @@
+/**
+ * Autor: 	Ricardo Sanchez
+ * Email:	rsanchez628@alumno.uned.es
+ */
 package cliente;
 
 import java.rmi.Naming;
@@ -7,14 +11,11 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-import Comun.*;
+import Interfaces.*;
+import Servicios.*;
+import Datos.*;
 
-/*
- * Clase con funciones auxliares de cliente
- * para mejore legibilidad.
- * 
- * autor: rsanchez628@alumno.uned.es Ricardo Sanchez
- */
+// Clase con funciones auxiliares de la clase cliente
 class AuxCliente {
 
 	/*
@@ -26,7 +27,7 @@ class AuxCliente {
 		Scanner sc = new Scanner(System.in);
 		int opcion;
 		AutentificarInt servicioAutentificar = setup.getAutentificar();
-		List<Usuario> usuarios = DebugC.crearUsuario();
+		//List<Usuario> usuarios = DebugC.crearUsuario();
 
 		do {
 			System.out.println("1. Registrar a un nuevo usuario");
@@ -35,17 +36,19 @@ class AuxCliente {
 
 			System.out.print("Ingrese su opción: ");
 			opcion = sc.nextInt();
+			sc.nextLine();
 
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido registrar a un nuevo usuario.");
-				DebugC.registrarUsuario(usuarios, servicioAutentificar, sc);
+				//DebugC.registrarUsuario(usuarios, servicioAutentificar, sc);
+				registrarUsuario(servicioAutentificar, sc);
 				break;
 			case 2:
 				System.out.println("Ha elegido hacer login.");
-				Sesion sesion = DebugC.crearSesion(usuarios, sc, setup);
-				if (DebugC.loguearUsuario(usuarios, servicioAutentificar, sesion)) {
-					menu2(usuarios, setup, sc, sesion);
+				Sesion sesion = crearSesion(sc, setup);
+				if (loguear(servicioAutentificar, sesion)) {
+					menu2(setup, sc, sesion);
 				}
 				break;
 			case 3:
@@ -60,18 +63,74 @@ class AuxCliente {
 		System.out.println("Fuera del menu.");
 		sc.close();
 	}
+	
+	/*
+	 * Crea la sesión del usuario que se loguea
+	 * param:
+	 * 	Scanner:		Scanner del sistema
+	 * 	Setup:		Configuración/Servidores de la aplicacion
+	 * return: sesión del usuario que se loguea	
+	 */
+	private static Sesion crearSesion( 
+			Scanner sc, 
+			Configuracion setup) {
+		Usuario ghost = getGhostUser(sc);
+		CallbackInt s = setup.getServidor();
+		Sesion sesion = new Sesion(ghost, s);
+		return sesion;
+	}
+	
+	/*
+	 * Pide datos por consola para crear un usuario fantasma con el que hacer el Login
+	 * param:
+	 * Scanner:		Scanner del sistema
+	 * return:		Usuario fantasma
+	 */
+	private static Usuario getGhostUser(Scanner sc) {
+		String Qnick = "Introduzca el nick: ";
+		String nick = Auxiliar.getString(sc, Qnick);
+		String Qpass = "Introduzca el pass: ";
+		String pass = Auxiliar.getString(sc, Qpass);
+		Usuario ghost = new Usuario(null, nick, pass);
+		return ghost;
+	}
+	
+	/*
+	 * Registra usuarios en el sistema
+	 * @param:
+	 * servicioAutentificar:	Interfaz con los servicios de Autentificación del servidor
+	 * sc:						Scanner del sistema
+	 * @return: Usuario registrado en la BBDD de la aplicación
+	 */
+	private static void registrarUsuario(AutentificarInt servicioAutentificar, Scanner sc) throws RemoteException {
+		//Usuario u = elegirUsuario(usuarios, sc);
+		Usuario u = getUsuario(sc);
+		AuxCliente.registrar(servicioAutentificar, u);
+	}
 
+	private static Usuario getUsuario(Scanner sc) {
+		String askNombre = "Introduzca el nombre de usuario: ";
+		String askNick = "Introduzca el nick del usuario: ";
+		String askPass = "Introduzca el pass del usuario: ";
+		String name = Auxiliar.getString(sc, askNombre);
+		String nick = Auxiliar.getString(sc, askNick);
+		String pass = Auxiliar.getString(sc, askPass);
+		Usuario u = new Usuario(name, nick, pass);
+		return u;
+	}
+	
 	/*
 	 * funcion para ofertar al usuario el menu una vez logueado según el enunciado
 	 * de la practica autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu2(List<Usuario> usuarios, Configuracion setup, Scanner sc, Sesion sesion)
+	private static void menu2(Configuracion setup, Scanner sc, Sesion sesion)
 			throws RemoteException {
 		int opcion;
 		GestorInt serGestor = setup.getGestor();
 		AutentificarInt serAuten = setup.getAutentificar();
 		Usuario lider;
+		boolean follow = false;
 		
 		serGestor.updateTrinos(sesion);
 
@@ -86,6 +145,7 @@ class AuxCliente {
 
 			System.out.print("Ingrese su opción: ");
 			opcion = sc.nextInt();
+			sc.nextLine();
 
 			switch (opcion) {
 			case 1:
@@ -93,32 +153,42 @@ class AuxCliente {
 				//HashMap<Usuario, List<Usuario>> s = serGestor.getSeguidores();
 				//showSeguidos(s);
 				//sesion.getUser().show();
+				/*
 				System.out.println("Trinos");
 				HashMap<Usuario, List<Trino>> lt = serGestor.getTrinos();
-				showTrinos(lt);
+				showTrinos(lt);*/
+				System.out.println("Opción sin implementar");
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
-				DebugC.trinar(sesion, serGestor, sc);
+				//DebugC.trinar(sesion, serGestor, sc);
+				trinar(sesion, serGestor, sc);
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios del sistema.");
-				listUser(serGestor);
+				//listUser(serGestor);
+				listUser(serAuten);
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
-				lider = DebugC.elegirUsuario(usuarios, sc);
+				//lider = DebugC.elegirUsuario(usuarios, sc);
+				follow = true;
+				String lNick = getLiderNick(sc, follow);
+				lider = serAuten.getUser(lNick);
 				serGestor.seguir(sesion, lider);
 				break;
 			case 5:
 				System.out.println("Ha elegido dejar de seguir a.");
-				lider = DebugC.elegirUsuario(usuarios, sc);
+				follow = false;
+				//lider = DebugC.elegirUsuario(usuarios, sc);
+				lider = serAuten.getUser(getLiderNick(sc, follow));
 				serGestor.abandonar(sesion, lider);
 				break;
 			case 6:
 				System.out.println("Borrar trino.");
 				Usuario user = sesion.getUser();
-				Trino t = DebugC.elegirTrino(user, sc);
+				//Trino t = DebugC.elegirTrino(user, sc);
+				Trino t = getTrino(sc, user);
 				serGestor.borrarTrino(sesion, t);
 				break;
 			case 7:
@@ -137,13 +207,76 @@ class AuxCliente {
 
 		System.out.println("Fuera del menu.");
 	}
+	
+	/*
+	 * Crea un trino del usuario que esta registrado en la sesison
+	 * param:
+	 * 	sc: Scanner del sistema
+	 * 	sesion: sesion del usuario que registra el trino
+	 * return:	Trino del usuario
+	 */
+	private static Trino getTrino(Scanner sc, Usuario u) {
+		String Qmessage = "Introduzca el mensaje del trino: ";
+		String m = Auxiliar.getString(sc, Qmessage);
+		Trino t = new Trino(u, m);
+		return t;
+	}
+	
+	/*
+	 * Crea a un usuario que se seguira o abandonara segun la opcion follow/unfollow
+	 * param:
+	 * 	sc:		scanner del sistema
+	 * 	follow:	bandera para indicar si el usuario se seguira o dejara de seguir
+	 * return: usuario que se seguira o dejara de seguir
+	 */
+	private static String getLiderNick(Scanner sc, boolean follow) {
+		String lNick = null;
+		String QnickF = "Introduzca el nick del usuario a seguir: ";
+		String QnickU = "Introduzca el nick del usuario a dejar de seguir: ";
+		if(follow) {
+			lNick = Auxiliar.getString(sc, QnickF);	
+		} else {
+			lNick = Auxiliar.getString(sc, QnickU);
+		}
+		return lNick;
+	}
+	
+	/*
+	 * El proceso cliente trina
+	 * @param
+	 * Sesion:		sesion del cliente que trina -> interfaz para hacer callback
+	 * serGestor:	interfaz con la llamada al metodo del servidor
+	 * sc:			scanner para comunicación de los procesos con el usuario
+	 * @return:
+	 * publicación del trino del proceso cliente
+	 * 
+	 */
+	private static void trinar(
+			Sesion sesion, 
+			GestorInt serGestor,
+			Scanner sc) {
+		Usuario user = sesion.getUser();
+		boolean registrar = true;
+		String askTrino = "Introduzca el trino";
+		String trinoTxt = Auxiliar.getString(sc, askTrino);
+		//Trino trino = elegirTrino(user, sc);
+		Trino trino = new Trino(user, trinoTxt);
+
+		try {
+			
+			serGestor.trinar(user, trino, registrar);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	 * Servico Autentificar. Registra a un usuario en la aplicacion
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	public static void autentificar(AutentificarInt servicio, Usuario u) {
+	/*
+	private static void autentificar(AutentificarInt servicio, Usuario u) {
 		u.show();
 		try {
 			if (servicio.registrar(u)) {
@@ -155,14 +288,14 @@ class AuxCliente {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/*
 	 * Servico Autentificar. Loguea a un usuario en la aplicacion
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	public static boolean loguear(AutentificarInt servicio, Sesion s) throws java.rmi.RemoteException {
+	private static boolean loguear(AutentificarInt servicio, Sesion s) throws java.rmi.RemoteException {
 		// u.show();
 		Usuario u = s.getUser();
 		if (!servicio.checkRegistro(u)) {
@@ -190,7 +323,7 @@ class AuxCliente {
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	public static void registrar(AutentificarInt servicio, Usuario u) {
+	private static void registrar(AutentificarInt servicio, Usuario u) {
 		u.show();
 		try {
 			if (servicio.registrar(u)) {
@@ -205,7 +338,7 @@ class AuxCliente {
 		}
 	}
 
-	public static Configuracion configurar(int puerto) {
+	static Configuracion configurar(int puerto) {
 		try {
 
 			// IMPORTAR LAS INTERFACES
@@ -244,6 +377,7 @@ class AuxCliente {
 	// BORRAR DESPUÉS
 
 	// --- funciones que muestran por consola la BBDD del servidor
+	/*
 	public static void showTrinos(HashMap<Usuario, List<Trino>> tp) {
 		for (Map.Entry<Usuario, List<Trino>> entry : tp.entrySet()) {
 			Usuario u = entry.getKey();
@@ -255,8 +389,8 @@ class AuxCliente {
 				System.out.println();
 			}
 		}
-	}
-
+	}*/
+/*
 	public static void showBloqueados(HashMap<Usuario, List<Usuario>> ub) {
 		for (Map.Entry<Usuario, List<Usuario>> entry : ub.entrySet()) {
 			Usuario u = entry.getKey();
@@ -281,7 +415,7 @@ class AuxCliente {
 				System.out.println();
 			}
 		}
-	}
+	}*/
 	
 	public static void showRegistrados(List<Usuario> l) {
 		System.out.println("Usuarios registrados en la aplicacion.");
@@ -301,7 +435,7 @@ class AuxCliente {
 		}
 	}
 	
-	public static void listUser(GestorInt servidor) throws RemoteException {
+	public static void listUser(AutentificarInt servidor) throws RemoteException {
 		List<Usuario> lu = servidor.getRegistrados();
 		List<Sesion> ls = servidor.getLogueados();
 		showRegistrados(lu);

@@ -1,7 +1,9 @@
 package BBDD;
 
-import Comun.*;
 import java.util.*;
+
+import Interfaces.*;
+import Datos.*;
 
 class AuxDatos {
 

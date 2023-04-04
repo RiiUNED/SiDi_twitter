@@ -4,7 +4,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-import Comun.*;;
+import Interfaces.*;
+import Datos.*;
+import Servicios.*;
 
 /*Implementacion de los servicios Datos
  * de la BBDD
@@ -110,6 +112,8 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	// loguea usuarios en el sistema
+	
+	//Chequear que el pass sea correcto
 	@Override
 	public boolean loguear(Sesion s) throws java.rmi.RemoteException {
 		// if (!AuxDatos.contains(this.logueados, u)) {
@@ -177,7 +181,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	// registra el trino con timestamp en la BBDD
-	public void registrarTrino(Usuario u) throws java.rmi.RemoteException{
+	public void registrarTrino(Usuario u) throws java.rmi.RemoteException {
 		String nick = u.getNick();
 		TrinoRegistrado tR = new TrinoRegistrado(nick);
 		this.trinoR.add(tR);
@@ -273,6 +277,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	public void info() throws java.rmi.RemoteException {
 		showBaneados();
 		showTrinoB();
+		Auxiliar.showSeguidores(this.seguidores);
 	}
 
 	// muestra la estructura de trinos y usuario baneados
@@ -290,6 +295,19 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	// chequea si un usuario fue baneado
 	public boolean checkBan(Usuario u) throws java.rmi.RemoteException {
 		return AuxDatos.containsU(this.baneados, u);
+	}
+
+	// devuelve el usuario registrado del que se le pase nick
+	public Usuario getUser(String nick) throws java.rmi.RemoteException {
+		Usuario user = null;
+		List<Usuario> registrados = this.registrados;
+		for (Usuario u : registrados) {
+			String n = u.getNick();
+			if (n.equals(nick)) {
+				user = u;
+			}
+		}
+		return user;
 	}
 
 }

@@ -23,17 +23,19 @@
     <fullyQualifiedTypeName name="java.util.Map.Entry"/>
     <fullyQualifiedTypeName name="Comun.CallbackInt"/>
     <fullyQualifiedTypeName name="Servidor.AuxServidor"/>
-    <fullyQualifiedTypeName name="Comun.GestorInt"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="Comun.Sesion"/>
     <fullyQualifiedTypeName name="cliente.Debug"/>
-    <fullyQualifiedTypeName name="Comun.Usuario"/>
-    <fullyQualifiedTypeName name="Comun.Trino"/>
-    <fullyQualifiedTypeName name="BBDD.AuxDatos"/>
-    <fullyQualifiedTypeName name="Comun.Auxiliar"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="BBDD.DatosImpl"/>
-    <fullyQualifiedTypeName name="java.util.LinkedList"/>
     <fullyQualifiedTypeName name="java.time.Instant"/>
     <fullyQualifiedTypeName name="BBDD.TrinoRegistrado"/>
+    <fullyQualifiedTypeName name="Servidor.DebugS"/>
+    <fullyQualifiedTypeName name="Comun.Auxiliar"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="Comun.Usuario"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="BBDD.AuxDatos"/>
+    <fullyQualifiedTypeName name="Servidor.GestorImpl"/>
+    <fullyQualifiedTypeName name="Comun.GestorInt"/>
+    <fullyQualifiedTypeName name="Comun.Trino"/>
 </qualifiedTypeNameHistroy>

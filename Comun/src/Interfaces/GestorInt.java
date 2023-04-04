@@ -1,7 +1,9 @@
-package Comun;
+package Interfaces;
 
 import java.rmi.Remote;
 import java.util.*;
+
+import Datos.*;
 
 /*
  * Interfaz con los servicios Gestor que serán
@@ -31,10 +33,10 @@ public interface GestorInt extends Remote {
 	public void updateTrinos(Sesion s) throws java.rmi.RemoteException;
 
 	// devuelve la lista de los usuarios registrados en la aplicacion
-	public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
+	///public List<Usuario> getRegistrados() throws java.rmi.RemoteException;
 
 	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
-	public List<Sesion> getLogueados() throws java.rmi.RemoteException;
+	//public List<Sesion> getLogueados() throws java.rmi.RemoteException;
 	
 	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
 	 * que lo estén desloguados 
