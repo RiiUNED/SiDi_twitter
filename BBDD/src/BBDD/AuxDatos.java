@@ -15,9 +15,20 @@ class AuxDatos {
 			List<Trino> lt = mt.get(u);
 			System.out.println("Trinos: ");
 			for (Trino t : lt) {
-				t.showTrino();
+				//t.showTrino();
+				System.out.println(t.toString());
 			}
 		}
+	}
+	
+	//informa de la URL del servicio RMI de la BBDD
+	static void info(String servicio){
+		//showBaneados();
+		//showTrinoB();
+		//Auxiliar.showSeguidores(this.seguidores);
+		
+		System.out.println("Servicio RMI de la BBDD");
+		System.out.println(servicio);
 	}
 
 	// muestra listas de usuarios

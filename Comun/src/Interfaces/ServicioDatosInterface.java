@@ -1,3 +1,8 @@
+/**
+ * Autor: 	Ricardo Sanchez
+ * Email:	rsanchez628@alumno.uned.es
+ */
+
 package Interfaces;
 
 import java.rmi.Remote;
@@ -6,16 +11,12 @@ import java.util.List;
 
 import Datos.*;
 
-/**
+/*
  * Interfaz con los servicios Datos de la BBDD que serán consumidos por el
  * servidor
- * 
- * @author rsanchez628@alumno.uned.es Ricardo Sanchez
- *
  */
-public interface DatosInt extends Remote {
+public interface ServicioDatosInterface extends Remote {
 
-	// --------------------------- CONSUMIDAS POR EL SERVICIO AUTENTIFICACION
 	// registra un usuario en el sistema
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
 
@@ -43,9 +44,8 @@ public interface DatosInt extends Remote {
 	// devuelve el usuario registrado del que se le pase nick
 	public Usuario getUser(String nick) throws java.rmi.RemoteException;
 
-	// --------------------------- CONSUMIDAS POR EL SERVICIO GESTOR
 	// devuelve servidores de los usuarios activos
-	public List<CallbackInt> getActivos(Usuario u) throws java.rmi.RemoteException;
+	public List<CallbackUsuarioInterface> getActivos(Usuario u) throws java.rmi.RemoteException;
 
 	// actualiza los trinos sin enviar a los usuarios desconectados
 	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException;
@@ -53,8 +53,7 @@ public interface DatosInt extends Remote {
 	// devuelve una lista de trinos que el usuario no publicó estando deslogueado
 	public List<Trino> getTrinos(Sesion s) throws java.rmi.RemoteException;
 
-	// --------------------------- trinar
-	// añade un mensaje
+	// añade el trino a la estructura de datos que relaciona usuario y trinos
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException;
 
 	// --------------------------- bloquear
@@ -66,34 +65,33 @@ public interface DatosInt extends Remote {
 	// public void desbloquear(Usuario lider, Usuario desbloqueado) throws
 	// java.rmi.RemoteException;
 
-	// --------------------------- seguir
 	// seguir a otro usuario
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException;
 
 	// abandonar a un lider
 	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException;
 
-	// --------------------------- test BORRAR DESPUÉS
-	// test de la función enviar. BORRAR DESPUÉS
+
+	// Devuelve la estructura de datos que relaciona usuarios y trinos
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;
 
 	// test de las funciones bloquear desbloquear. BORRAR DESPUÉS
 	// public HashMap<Usuario, List<Usuario>> getBloqueados() throws
 	// java.rmi.RemoteException;
 
-	// test de las funciones seguir abandonar. BORRAR DESPUÉS
+	// Devuelve la estructura de datos que relaciona a los usuarios y con sus seguidores
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
 
-	/*
-	 * borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
-	 * que lo estén desloguados
-	 */
+	
+	// borra el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	// que esten desloguados 
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
 
+	//publica los trinos en los timeline correspondientes
 	public void imprimirTrinos() throws java.rmi.RemoteException;
 
 	// vacia la info de la BBDD
-	public void info() throws java.rmi.RemoteException;
+	//public void info(String servicio) throws java.rmi.RemoteException;
 
 	// chequea si un usuario fue baneado
 	public boolean checkBan(Usuario u) throws java.rmi.RemoteException;
@@ -104,4 +102,7 @@ public interface DatosInt extends Remote {
 	// registra el trino con timestamp en la BBDD
 	public void registrarTrino(Usuario u) throws java.rmi.RemoteException;
 
+	// chequea si la contraseña se corresponde con la registrada al nick del usuario
+	// que se proporciono para generar la sesion
+	public boolean checkPass(Sesion sesion) throws java.rmi.RemoteException;
 }

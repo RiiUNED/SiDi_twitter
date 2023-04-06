@@ -4,25 +4,25 @@ import Interfaces.*;
 
 public class Configuracion {
 	
-	private final AutentificarInt autentificar;
-	private final GestorInt gestor;
-	private final CallbackInt servidor;
+	private final ServicioAutentificacionInterface autentificar;
+	private final ServicioGestorInterface gestor;
+	private final CallbackUsuarioInterface servidor;
 	
-	public Configuracion(AutentificarInt a, GestorInt g, CallbackInt s) {
+	public Configuracion(ServicioAutentificacionInterface a, ServicioGestorInterface g, CallbackUsuarioInterface s) {
 		this.autentificar = a;
 		this.gestor = g;
 		this.servidor = s;
 	}
 	
-	public AutentificarInt getAutentificar() {
+	public ServicioAutentificacionInterface getAutentificar() {
 		return this.autentificar;
 	}
 	
-	public GestorInt getGestor() {
+	public ServicioGestorInterface getGestor() {
 		return this.gestor;
 	}
 	
-	public CallbackInt getServidor() {
+	public CallbackUsuarioInterface getServidor() {
 		return this.servidor;
 	}
 

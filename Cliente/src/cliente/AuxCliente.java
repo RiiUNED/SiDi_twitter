@@ -23,10 +23,11 @@ class AuxCliente {
 	 * la practica autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu1(Configuracion setup) throws RemoteException {
+	public static void menu1(Configuracion setup, String servicio) throws RemoteException {
 		Scanner sc = new Scanner(System.in);
+		boolean servidor = false;
 		int opcion;
-		AutentificarInt servicioAutentificar = setup.getAutentificar();
+		ServicioAutentificacionInterface servicioAutentificar = setup.getAutentificar();
 		//List<Usuario> usuarios = DebugC.crearUsuario();
 
 		do {
@@ -42,13 +43,17 @@ class AuxCliente {
 			case 1:
 				System.out.println("Ha elegido registrar a un nuevo usuario.");
 				//DebugC.registrarUsuario(usuarios, servicioAutentificar, sc);
-				registrarUsuario(servicioAutentificar, sc);
+				registrarUsuario(servicioAutentificar, sc, servidor);
 				break;
 			case 2:
 				System.out.println("Ha elegido hacer login.");
 				Sesion sesion = crearSesion(sc, setup);
-				if (loguear(servicioAutentificar, sesion)) {
-					menu2(setup, sc, sesion);
+				if(checkPass(servicioAutentificar, sesion)) {
+					if (loguear(servicioAutentificar, sesion)) {
+						menu2(setup, sc, sesion, servicio);
+					} 
+				}else {
+					System.out.println("Datos incorrectos");
 				}
 				break;
 			case 3:
@@ -75,9 +80,13 @@ class AuxCliente {
 			Scanner sc, 
 			Configuracion setup) {
 		Usuario ghost = getGhostUser(sc);
-		CallbackInt s = setup.getServidor();
+		CallbackUsuarioInterface s = setup.getServidor();
 		Sesion sesion = new Sesion(ghost, s);
 		return sesion;
+	}
+	
+	private static boolean checkPass(ServicioAutentificacionInterface servicio, Sesion sesion) throws RemoteException {
+		return servicio.checkPass(sesion);
 	}
 	
 	/*
@@ -102,21 +111,13 @@ class AuxCliente {
 	 * sc:						Scanner del sistema
 	 * @return: Usuario registrado en la BBDD de la aplicación
 	 */
-	private static void registrarUsuario(AutentificarInt servicioAutentificar, Scanner sc) throws RemoteException {
+	private static void registrarUsuario(
+			ServicioAutentificacionInterface servicioAutentificar, 
+			Scanner sc,
+			boolean servidor) throws RemoteException {
 		//Usuario u = elegirUsuario(usuarios, sc);
-		Usuario u = getUsuario(sc);
+		Usuario u = Auxiliar.getUsuario(sc, servidor);
 		AuxCliente.registrar(servicioAutentificar, u);
-	}
-
-	private static Usuario getUsuario(Scanner sc) {
-		String askNombre = "Introduzca el nombre de usuario: ";
-		String askNick = "Introduzca el nick del usuario: ";
-		String askPass = "Introduzca el pass del usuario: ";
-		String name = Auxiliar.getString(sc, askNombre);
-		String nick = Auxiliar.getString(sc, askNick);
-		String pass = Auxiliar.getString(sc, askPass);
-		Usuario u = new Usuario(name, nick, pass);
-		return u;
 	}
 	
 	/*
@@ -124,11 +125,15 @@ class AuxCliente {
 	 * de la practica autor: rsanchez628@alumno.uned.es
 	 */
 
-	private static void menu2(Configuracion setup, Scanner sc, Sesion sesion)
+	private static void menu2(
+			Configuracion setup, 
+			Scanner sc, 
+			Sesion sesion,
+			String servicio)
 			throws RemoteException {
 		int opcion;
-		GestorInt serGestor = setup.getGestor();
-		AutentificarInt serAuten = setup.getAutentificar();
+		ServicioGestorInterface serGestor = setup.getGestor();
+		ServicioAutentificacionInterface serAuten = setup.getAutentificar();
 		Usuario lider;
 		boolean follow = false;
 		
@@ -149,15 +154,8 @@ class AuxCliente {
 
 			switch (opcion) {
 			case 1:
-				System.out.println("Ha elegido ver la información del usuario.");
-				//HashMap<Usuario, List<Usuario>> s = serGestor.getSeguidores();
-				//showSeguidos(s);
-				//sesion.getUser().show();
-				/*
-				System.out.println("Trinos");
-				HashMap<Usuario, List<Trino>> lt = serGestor.getTrinos();
-				showTrinos(lt);*/
-				System.out.println("Opción sin implementar");
+				System.out.println("Ha elegido ver la información del usuario logueado.");
+				info(servicio);
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
@@ -218,7 +216,8 @@ class AuxCliente {
 	private static Trino getTrino(Scanner sc, Usuario u) {
 		String Qmessage = "Introduzca el mensaje del trino: ";
 		String m = Auxiliar.getString(sc, Qmessage);
-		Trino t = new Trino(u, m);
+		String nick = u.getNick();
+		Trino t = new Trino(nick, m);
 		return t;
 	}
 	
@@ -253,14 +252,15 @@ class AuxCliente {
 	 */
 	private static void trinar(
 			Sesion sesion, 
-			GestorInt serGestor,
+			ServicioGestorInterface serGestor,
 			Scanner sc) {
 		Usuario user = sesion.getUser();
+		String nick = user.getNick();
 		boolean registrar = true;
 		String askTrino = "Introduzca el trino";
 		String trinoTxt = Auxiliar.getString(sc, askTrino);
 		//Trino trino = elegirTrino(user, sc);
-		Trino trino = new Trino(user, trinoTxt);
+		Trino trino = new Trino(nick, trinoTxt);
 
 		try {
 			
@@ -295,7 +295,7 @@ class AuxCliente {
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	private static boolean loguear(AutentificarInt servicio, Sesion s) throws java.rmi.RemoteException {
+	private static boolean loguear(ServicioAutentificacionInterface servicio, Sesion s) throws java.rmi.RemoteException {
 		// u.show();
 		Usuario u = s.getUser();
 		if (!servicio.checkRegistro(u)) {
@@ -323,7 +323,7 @@ class AuxCliente {
 	 * 
 	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
 	 */
-	private static void registrar(AutentificarInt servicio, Usuario u) {
+	private static void registrar(ServicioAutentificacionInterface servicio, Usuario u) {
 		u.show();
 		try {
 			if (servicio.registrar(u)) {
@@ -338,14 +338,14 @@ class AuxCliente {
 		}
 	}
 
-	static Configuracion configurar(int puerto) {
+	static Configuracion configurar(int puerto, String servicio) {
 		try {
 
 			// IMPORTAR LAS INTERFACES
-			String registroAutentificar = "rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName();
-			String registroGestor = "rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName();
-			AutentificarInt servicioAutentificar = (AutentificarInt) Naming.lookup(registroAutentificar);
-			GestorInt servicioGestor = (GestorInt) Naming.lookup(registroGestor);
+			String registroAutentificar = "rmi://localhost:" + puerto + "/" + ServicioAutentificacionInterface.class.getCanonicalName();
+			String registroGestor = "rmi://localhost:" + puerto + "/" + ServicioGestorInterface.class.getCanonicalName();
+			ServicioAutentificacionInterface servicioAutentificar = (ServicioAutentificacionInterface) Naming.lookup(registroAutentificar);
+			ServicioGestorInterface servicioGestor = (ServicioGestorInterface) Naming.lookup(registroGestor);
 
 			// registro en el puerto por defecto de rmi
 			Registry registry = LocateRegistry.getRegistry(puerto);
@@ -356,17 +356,27 @@ class AuxCliente {
 				registry = LocateRegistry.createRegistry(puerto);
 			}
 
-			CallbackInt servidorC = new CallbackImpl();
+			CallbackUsuarioInterface servidorC = new CallbackUsuarioImpl();
 
-			servidorC = (CallbackInt) UnicastRemoteObject.exportObject(servidorC, 0);
-			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
+			servidorC = (CallbackUsuarioInterface) UnicastRemoteObject.exportObject(servidorC, 0);
+//			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
+			Naming.rebind(servicio, servidorC);
 
 			return new Configuracion(servicioAutentificar, servicioGestor, servidorC);
 
 		} catch (Exception e) {
-
+/*
 			System.out.println("Excepcion: " + e);
-			e.printStackTrace();
+			e.printStackTrace(); */
+			System.out.println("El correcto orden para levantar servicios es:");
+			System.out.println("1. BBDD");
+			System.out.println("2. Servidor");
+			System.out.println("3. Clientes");
+			System.out.println("El correcto orden para salir es:");
+			System.out.println("1. Clientes");
+			System.out.println("2. Servidor");
+			System.out.println("3. BBDD");
+			System.exit(0);
 			return new Configuracion(null, null, null);
 
 		}
@@ -417,7 +427,7 @@ class AuxCliente {
 		}
 	}*/
 	
-	public static void showRegistrados(List<Usuario> l) {
+	private static void showRegistrados(List<Usuario> l) {
 		System.out.println("Usuarios registrados en la aplicacion.");
 		for (Usuario e : l) {
 			e.show();
@@ -425,7 +435,7 @@ class AuxCliente {
 		}
 	}
 	
-	public static void showLogueados(List<Sesion> l) {
+	private static void showLogueados(List<Sesion> l) {
 		Usuario u;
 		System.out.println("Usuarios actualmente logueados en la aplicacion.");
 		for(Sesion s : l) {
@@ -435,10 +445,20 @@ class AuxCliente {
 		}
 	}
 	
-	public static void listUser(AutentificarInt servidor) throws RemoteException {
+	private static void listUser(ServicioAutentificacionInterface servidor) throws RemoteException {
 		List<Usuario> lu = servidor.getRegistrados();
 		List<Sesion> ls = servidor.getLogueados();
 		showRegistrados(lu);
 		showLogueados(ls);
+	}
+	
+	static void info(String servicio) {
+		// showBaneados();
+		// showTrinoB();
+		// Auxiliar.showSeguidores(this.seguidores);
+
+		System.out.println("Servicio RMI del cliente");
+		System.out.println("Servicio: "+servicio);
+		//System.out.println("Servicio gestor: "+gestor);
 	}
 }

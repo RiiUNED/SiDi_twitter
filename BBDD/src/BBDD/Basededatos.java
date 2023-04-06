@@ -11,22 +11,25 @@ import java.util.Scanner;
 
 import Interfaces.*;
 
-public class BBDD {
+public class Basededatos {
 
 	public static void main(String[] args) throws Exception {
 		
 		// registro en el puerto por defecto de rmi
 		int puerto = Registry.REGISTRY_PORT;
+		String servicio = "rmi://localhost:" + puerto + "/" + ServicioDatosInterface.class.getCanonicalName();
 		
-		DatosInt servidor = configurar(puerto);
+		ServicioDatosInterface servidor = configurar(puerto, servicio);
 		
-		menu(servidor);
+		menu(servidor, servicio);
 		
 		System.exit(0);
 
 	}
 	
-	public static DatosInt configurar(int puerto) throws RemoteException, MalformedURLException {
+	public static ServicioDatosInterface configurar(
+			int puerto,
+			String servicio) throws RemoteException, MalformedURLException {
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
 			registry.list();
@@ -36,10 +39,11 @@ public class BBDD {
 		}
 
 		// Exportar objeto
-		DatosInt servidorDatos = new DatosImpl();
+		ServicioDatosInterface servidorDatos = new ServicioDatosImpl();
 		UnicastRemoteObject.unexportObject(servidorDatos, false);
-		servidorDatos = (DatosInt) UnicastRemoteObject.exportObject(servidorDatos, 0);
-		Naming.rebind("rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName(), servidorDatos);
+		servidorDatos = (ServicioDatosInterface) UnicastRemoteObject.exportObject(servidorDatos, 0);
+		//Naming.rebind("rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName(), servidorDatos);
+		Naming.rebind(servicio, servidorDatos);
 		
 		return servidorDatos;
 	}
@@ -50,7 +54,7 @@ public class BBDD {
 	 * autor: rsanchez628@alumno.uned.es
 	 */
 
-	public static void menu(DatosInt servidor) throws RemoteException { 
+	public static void menu(ServicioDatosInterface servidor, String servicio) throws RemoteException { 
 	        Scanner sc = new Scanner(System.in);
 	        int opcion;
 
@@ -66,7 +70,7 @@ public class BBDD {
 	            switch (opcion) {
 	                case 1:
 	                    System.out.println("Ha elegido información de la BBDD.");
-	                    servidor.info();
+	                    AuxDatos.info(servicio);
 	                    break;
 	                case 2:
 	                    System.out.println("Ha elegido listar trinos.");

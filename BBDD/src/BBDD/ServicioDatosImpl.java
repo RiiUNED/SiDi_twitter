@@ -18,7 +18,7 @@ import Servicios.*;
  * 			Ricardo Sanchez
  */
 
-public class DatosImpl extends UnicastRemoteObject implements DatosInt {
+public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDatosInterface {
 
 	private List<Usuario> registrados;
 	private List<Sesion> logueados;
@@ -30,7 +30,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	private HashMap<Usuario, List<Usuario>> seguidores;
 	private HashMap<Trino, List<Usuario>> pendientes;
 
-	protected DatosImpl() throws RemoteException {
+	protected ServicioDatosImpl() throws RemoteException {
 		super();
 		this.registrados = new LinkedList<Usuario>();
 		this.logueados = new LinkedList<Sesion>();
@@ -43,6 +43,7 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 		this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
 
+	//publica los trinos en los timeline correspondientes
 	@Override
 	public void imprimirTrinos() {
 		for (TrinoRegistrado tR : this.trinoR) {
@@ -52,9 +53,9 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 
 	// Devuelve servidores de los usuarios activos
 	@Override
-	public List<CallbackInt> getActivos(Usuario u) throws java.rmi.RemoteException {
+	public List<CallbackUsuarioInterface> getActivos(Usuario u) throws java.rmi.RemoteException {
 
-		List<CallbackInt> activos = new LinkedList<CallbackInt>();
+		List<CallbackUsuarioInterface> activos = new LinkedList<CallbackUsuarioInterface>();
 		HashMap<Usuario, List<Usuario>> seguidores = this.seguidores;
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
 
@@ -112,8 +113,8 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 	}
 
 	// loguea usuarios en el sistema
-	
-	//Chequear que el pass sea correcto
+
+	// Chequear que el pass sea correcto
 	@Override
 	public boolean loguear(Sesion s) throws java.rmi.RemoteException {
 		// if (!AuxDatos.contains(this.logueados, u)) {
@@ -226,8 +227,11 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 		// this.seguidores.get(lider).remove(exU);
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
 		// System.out.println(misSeguidores.size());
-		this.seguidores.remove(lider);
+		//this.seguidores.remove(lider);
+		//System.out.println(misSeguidores.size());
 		AuxDatos.removeU(misSeguidores, exU);
+		//System.out.println(misSeguidores.size());
+		if(misSeguidores.isEmpty()) {this.seguidores.remove(lider);}
 		// this.seguidores.put(lider, misSeguidores);
 	}
 
@@ -274,12 +278,6 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 		}
 	}
 
-	public void info() throws java.rmi.RemoteException {
-		showBaneados();
-		showTrinoB();
-		Auxiliar.showSeguidores(this.seguidores);
-	}
-
 	// muestra la estructura de trinos y usuario baneados
 	public void showTrinoB() {
 		System.out.println("Trinos baneados:");
@@ -310,4 +308,19 @@ public class DatosImpl extends UnicastRemoteObject implements DatosInt {
 		return user;
 	}
 
+	// chequea si la contraseña se corresponde con la registrada al nick del usuario
+	// que se proporciono para generar la sesion
+	public boolean checkPass(Sesion sesion) throws java.rmi.RemoteException{
+		boolean check = false;
+		List<Usuario> registrados = this.registrados;
+		Usuario user = sesion.getUser();
+		String pass = user.getPassword();
+		for(Usuario u :registrados) {
+			if (u.equals(user)){
+				String passResgister = u.getPassword();
+				if(passResgister.equals(pass)) {check = true;}
+			}
+		}
+		return check;
+	}
 }

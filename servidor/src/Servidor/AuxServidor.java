@@ -15,11 +15,12 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import Interfaces.*;
+import Servicios.Auxiliar;
 import Datos.*;
 
 class AuxServidor {
 
-	public static GestorInt configurar(int puerto) throws RemoteException {
+	static ServicioGestorInterface configurar(int puerto, String autenticar, String gestor) throws RemoteException {
 
 		Registry registry = LocateRegistry.getRegistry(puerto);
 		try {
@@ -30,15 +31,19 @@ class AuxServidor {
 		}
 
 		// Exportar objeto
-		AutentificarInt servidor1 = new AutentificarImpl();
-		GestorInt servidor2 = new GestorImpl();
+		ServicioAutentificacionInterface servidor1 = new ServicioAutentificacionImpl();
+		ServicioGestorInterface servidor2 = new ServicioGestorImpl();
 		UnicastRemoteObject.unexportObject(servidor1, false);
 		UnicastRemoteObject.unexportObject(servidor2, false);
-		servidor1 = (AutentificarInt) UnicastRemoteObject.exportObject(servidor1, 0);
-		servidor2 = (GestorInt) UnicastRemoteObject.exportObject(servidor2, 0);
+		servidor1 = (ServicioAutentificacionInterface) UnicastRemoteObject.exportObject(servidor1, 0);
+		servidor2 = (ServicioGestorInterface) UnicastRemoteObject.exportObject(servidor2, 0);
 		try {
-			Naming.rebind("rmi://localhost:" + puerto + "/" + AutentificarInt.class.getCanonicalName(), servidor1);
-			Naming.rebind("rmi://localhost:" + puerto + "/" + GestorInt.class.getCanonicalName(), servidor2);
+			// Naming.rebind("rmi://localhost:" + puerto + "/" +
+			// AutentificarInt.class.getCanonicalName(), servidor1);
+			// Naming.rebind("rmi://localhost:" + puerto + "/" +
+			// GestorInt.class.getCanonicalName(), servidor2);
+			Naming.rebind(autenticar, servidor1);
+			Naming.rebind(gestor, servidor2);
 		} catch (RemoteException | MalformedURLException e) {
 			e.printStackTrace();
 			return servidor2;
@@ -46,42 +51,49 @@ class AuxServidor {
 		return servidor2;
 	}
 
-	public static DatosInt getServicioDatos(int puerto) {
-		String registroDatos = "rmi://localhost:" + puerto + "/" + DatosInt.class.getCanonicalName();
-		DatosInt servicioDatos = null;
+	static ServicioDatosInterface getServicioDatos(int puerto) {
+		String registroDatos = "rmi://localhost:" + puerto + "/" + ServicioDatosInterface.class.getCanonicalName();
+		ServicioDatosInterface servicioDatos = null;
 		try {
-			servicioDatos = (DatosInt) Naming.lookup(registroDatos);
+			servicioDatos = (ServicioDatosInterface) Naming.lookup(registroDatos);
 			return servicioDatos;
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("El correcto orden para levantar servicios es:");
+			System.out.println("1. BBDD");
+			System.out.println("2. Servidor");
+			System.out.println("3. Clientes");
+			System.out.println("El correcto orden para salir es:");
+			System.out.println("1. Clientes");
+			System.out.println("2. Servidor");
+			System.out.println("3. BBDD");
+			System.exit(0);
 			return servicioDatos;
 		}
 	}
-	
-	public static void banear(DatosInt d, Usuario u) throws RemoteException{
-		if(d.banear(u)) {
+
+	private static void banear(ServicioDatosInterface d, Usuario u) throws RemoteException {
+		if (d.banear(u)) {
 			u.show();
 			System.out.println("ha sido baneado");
 		} else {
 			u.show();
 			System.out.println("ya estaba baneado");
 		}
-		
+
 	}
-	
-	public static void unban(
-			GestorInt servidor, 
-			DatosInt d, 
-			Usuario u) throws RemoteException{
+
+	private static void unban(ServicioGestorInterface servidor, ServicioDatosInterface d, Usuario u) throws RemoteException {
 		List<Trino> trinosB = d.unban(u);
-		
-		for(Trino t : trinosB) {
+
+		for (Trino t : trinosB) {
 			servidor.trinar(u, t, false);
 		}
 	}
 
-	public static void menu(GestorInt servidor, DatosInt d) throws RemoteException {
+	static void menu(ServicioGestorInterface servidor, ServicioDatosInterface d, String autenticar, String gestor) throws RemoteException {
 		Scanner sc = new Scanner(System.in);
+		boolean serv = true;
 		int opcion;
 
 		do {
@@ -99,7 +111,7 @@ class AuxServidor {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido ver información del servidor.");
-				// ¿Qué información?
+				info(autenticar, gestor);
 				break;
 			case 2:
 				System.out.println("Ha elegido listar usuarios registrados.");
@@ -109,16 +121,22 @@ class AuxServidor {
 				System.out.println("Ha elegido listar usuarios logueados.");
 				showLog(d);
 				break;
-			case 4:
+			case 4: // Mirar si creo usuario en Cliente, pasarlo a comun y pista
 				System.out.println("Ha elegido bloquear (banear) usuario.");
-				List<Usuario> lu = DebugS.crearUsuario();
-				Usuario u = DebugS.elegirUsuario(lu, sc);
+				/*
+				 * List<Usuario> lu = DebugS.crearUsuario(); Usuario u =
+				 * DebugS.elegirUsuario(lu, sc);
+				 */
+				Usuario u = Auxiliar.getUsuario(sc, serv);
 				banear(d, u);
 				break;
 			case 5:
 				System.out.println("Ha elegido desbloquear usuario.");
-				List<Usuario> lud = DebugS.crearUsuario();
-				Usuario ud = DebugS.elegirUsuario(lud, sc);
+				/*
+				 * List<Usuario> lud = DebugS.crearUsuario(); Usuario ud =
+				 * DebugS.elegirUsuario(lud, sc);
+				 */
+				Usuario ud = Auxiliar.getUsuario(sc, serv);
 				unban(servidor, d, ud);
 				break;
 			case 6:
@@ -135,7 +153,7 @@ class AuxServidor {
 	}
 
 	// muestra los usuarios registrados en la aplicación
-	public static void showRegistrados(DatosInt d) throws RemoteException {
+	private static void showRegistrados(ServicioDatosInterface d) throws RemoteException {
 		List<Usuario> registrados = d.getRegistrados();
 
 		for (Usuario usuario : registrados) {
@@ -144,7 +162,7 @@ class AuxServidor {
 	}
 
 	// muestra los usuarios logueados en la aplicación
-	public static void showLog(DatosInt d) throws RemoteException {
+	private static void showLog(ServicioDatosInterface d) throws RemoteException {
 		List<Sesion> log = d.getLogueados();
 		Usuario usuario;
 
@@ -154,12 +172,12 @@ class AuxServidor {
 		}
 	}
 
-	public static void publicar(List<CallbackInt> l, Trino trino) {
+	static void publicar(List<CallbackUsuarioInterface> l, Trino trino) {
 		if (!l.isEmpty()) {
 			l.stream().forEach(new Consumer<>() {
 
 				@Override
-				public void accept(CallbackInt t) {
+				public void accept(CallbackUsuarioInterface t) {
 					// TODO Auto-generated method stub
 					try {
 						t.publicar(trino);
@@ -169,6 +187,17 @@ class AuxServidor {
 				}
 			});
 		}
+	}
+
+	// informa de la URL del servicio RMI del Servidor
+	static void info(String autenticar, String gestor) {
+		// showBaneados();
+		// showTrinoB();
+		// Auxiliar.showSeguidores(this.seguidores);
+
+		System.out.println("Servicio RMI del servidor");
+		System.out.println("Servicio autenticar: "+autenticar);
+		System.out.println("Servicio gestor: "+gestor);
 	}
 
 }

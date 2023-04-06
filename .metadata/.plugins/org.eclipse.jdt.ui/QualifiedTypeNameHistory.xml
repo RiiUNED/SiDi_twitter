@@ -10,8 +10,6 @@
     <fullyQualifiedTypeName name="java.rmi.Remote"/>
     <fullyQualifiedTypeName name="cliente.CallbackImpl"/>
     <fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
-    <fullyQualifiedTypeName name="java.lang.Override"/>
-    <fullyQualifiedTypeName name="cliente.AuxCliente"/>
     <fullyQualifiedTypeName name="java.util.Scanner"/>
     <fullyQualifiedTypeName name="java.lang.System"/>
     <fullyQualifiedTypeName name="java.io.Serializable"/>
@@ -33,9 +31,15 @@
     <fullyQualifiedTypeName name="Comun.Auxiliar"/>
     <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="Comun.Usuario"/>
-    <fullyQualifiedTypeName name="java.util.LinkedList"/>
     <fullyQualifiedTypeName name="BBDD.AuxDatos"/>
     <fullyQualifiedTypeName name="Servidor.GestorImpl"/>
     <fullyQualifiedTypeName name="Comun.GestorInt"/>
     <fullyQualifiedTypeName name="Comun.Trino"/>
+    <fullyQualifiedTypeName name="Interfaces.AutentificarInt"/>
+    <fullyQualifiedTypeName name="cliente.AuxCliente"/>
+    <fullyQualifiedTypeName name="java.lang.Override"/>
+    <fullyQualifiedTypeName name="Datos.Trino"/>
+    <fullyQualifiedTypeName name="java.util.LinkedList"/>
+    <fullyQualifiedTypeName name="Datos.Usuario"/>
+    <fullyQualifiedTypeName name="Servicios.Auxiliar"/>
 </qualifiedTypeNameHistroy>

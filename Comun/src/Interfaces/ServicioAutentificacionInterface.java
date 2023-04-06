@@ -1,3 +1,8 @@
+/**
+ * Autor:	Ricardo Sanchez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package Interfaces;
 
 import java.rmi.*;
@@ -7,12 +12,10 @@ import Datos.*;
 
 /*
  * Interfaz con los servicios Auntentificar que serán consumidos 
- * por los usuarios del servicio
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
+ * por los clientes del servicio
  */
 
-public interface AutentificarInt extends Remote {
+public interface ServicioAutentificacionInterface extends Remote {
 
 	// registra un usuario en el sistema
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException;
@@ -37,4 +40,8 @@ public interface AutentificarInt extends Remote {
 	
 	//devuelve el usuario registrado del que se le pase nick
 	public Usuario getUser(String nick) throws java.rmi.RemoteException;
+	
+	//chequea si la contraseña se corresponde con la registrada al nick del usuario
+	//que se proporciono para generar la sesion
+	public boolean checkPass(Sesion sesion) throws java.rmi.RemoteException; 
 }

@@ -1,50 +1,45 @@
 package Datos;
 
 import java.io.Serializable;
-
-/*
- * Clase para instanciar los trinos de los usuarios
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
- */
+import java.util.Date;
 
 public class Trino implements Serializable{
-	private Usuario sender;
-	private String message;
-	
-	public Trino(Usuario u, String m) {
-		this.sender = u;
-		this.message = m; 
-	}
-	
-	//geters y seters
-	public Usuario getSender() {
-		return sender;
-	}
-	public void setSender(Usuario sender) {
-		this.sender = sender;
-	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
-	public void showTrino() {
-		System.out.println(this.sender.getNick()+", tuiteó: ");
-		System.out.println(this.message);
-	}
 
+	private static final long serialVersionUID = 2L;
+	private String trino;
+	private String nickPropietario;	//Ojo no pueden haber varios usuarios con el mismo nick
+	private long timestamp; //momento en el que se produce el evento (tiempo en el servidor)
+	
+	public Trino(String nickPropietario, String trino)
+	{
+		this.trino=trino;
+		this.nickPropietario=nickPropietario;
+		Date date = new Date();
+		this.timestamp=date.getTime();
+	}
+	public String GetTrino()
+	{
+		return (trino);
+	}
+	public String GetNickPropietario()
+	{
+		return(nickPropietario);
+	}
+	public long GetTimestamp()
+	{
+		return (timestamp);
+	}
+	public String toString(){
+		return (getClass().getName()+"@"+trino+"|"+nickPropietario+"|"+timestamp+"|");
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
-		result = prime * result + ((sender == null) ? 0 : sender.hashCode());
+		result = prime * result + ((nickPropietario == null) ? 0 : nickPropietario.hashCode());
+		result = prime * result + ((trino == null) ? 0 : trino.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -54,16 +49,18 @@ public class Trino implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Trino other = (Trino) obj;
-		if (message == null) {
-			if (other.message != null)
+		if (nickPropietario == null) {
+			if (other.nickPropietario != null)
 				return false;
-		} else if (!message.equals(other.message))
+		} else if (!nickPropietario.equals(other.nickPropietario))
 			return false;
-		if (sender == null) {
-			if (other.sender != null)
+		if (trino == null) {
+			if (other.trino != null)
 				return false;
-		} else if (!sender.equals(other.sender))
+		} else if (!trino.equals(other.trino))
 			return false;
 		return true;
 	}
+	
+	
 }

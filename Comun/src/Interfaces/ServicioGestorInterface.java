@@ -1,3 +1,8 @@
+/**
+ * Autor:	Ricardo Sanchez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package Interfaces;
 
 import java.rmi.Remote;
@@ -7,14 +12,12 @@ import Datos.*;
 
 /*
  * Interfaz con los servicios Gestor que serán
- * consumidos por los usuarios del servicio
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
+ * consumidos por los clientes del servicio
  */
 
-public interface GestorInt extends Remote {
+public interface ServicioGestorInterface extends Remote {
 
-	// usuario envia un trino
+	// usuario publica un trino
 	public void trinar(Usuario u, Trino t, boolean registrar) throws java.rmi.RemoteException;
 
 	// un usuario bloquea a otro
@@ -38,15 +41,15 @@ public interface GestorInt extends Remote {
 	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
 	//public List<Sesion> getLogueados() throws java.rmi.RemoteException;
 	
-	/* borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
-	 * que lo estén desloguados 
-	 */
+	// borra el trino de un usuario en la BBDD y evita que le llegue a los usuarios
+	// que esten desloguados 
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
 
-	// funciones de prueba. Borrar después
+	//Devuelve la estructura de datos que relaciona usuarios y trinos
 	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;
 
 	//public HashMap<Usuario, List<Usuario>> getBloqueados() throws java.rmi.RemoteException;
 
+	//Devuelve la estructura de datos que relaciona usuarios con sus seguidores
 	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
 }

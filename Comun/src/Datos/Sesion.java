@@ -7,9 +7,9 @@ import Interfaces.*;
 public class Sesion implements Serializable{
 	
 	private Usuario user;
-	private CallbackInt servidor;
+	private CallbackUsuarioInterface servidor;
 	
-	public Sesion(Usuario u, CallbackInt s) {
+	public Sesion(Usuario u, CallbackUsuarioInterface s) {
 		this.user = u;
 		this.servidor = s;
 	}
@@ -18,7 +18,7 @@ public class Sesion implements Serializable{
 		return this.user;
 	}
 
-	public CallbackInt getServidor() {
+	public CallbackUsuarioInterface getServidor() {
 		return this.servidor;
 	}
 	

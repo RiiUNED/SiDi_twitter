@@ -20,11 +20,11 @@ import Datos.*;
  * @autor: rsanchez628@alumno.uned.es
  * 			Ricardo Sanchez
  */
-public class AutentificarImpl extends UnicastRemoteObject implements AutentificarInt {
+public class ServicioAutentificacionImpl extends UnicastRemoteObject implements ServicioAutentificacionInterface {
 
-	private DatosInt servicioDatos;
+	private ServicioDatosInterface servicioDatos;
 
-	public AutentificarImpl() throws RemoteException {
+	public ServicioAutentificacionImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
 		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
@@ -70,10 +70,15 @@ public class AutentificarImpl extends UnicastRemoteObject implements Autentifica
 	public List<Sesion> getLogueados() throws java.rmi.RemoteException {
 		return this.servicioDatos.getLogueados();
 	}
-	
-	//devuelve el usuario registrado del que se le pase nick
-		public Usuario getUser(String nick) throws java.rmi.RemoteException{
-			return this.servicioDatos.getUser(nick);
-		}
 
+	// devuelve el usuario registrado del que se le pase nick
+	public Usuario getUser(String nick) throws java.rmi.RemoteException {
+		return this.servicioDatos.getUser(nick);
+	}
+
+	// chequea si la contraseña se corresponde con la registrada al nick del usuario
+	// que se proporciono para generar la sesion
+	public boolean checkPass(Sesion sesion) throws java.rmi.RemoteException{
+		return this.servicioDatos.checkPass(sesion);
+	}
 }

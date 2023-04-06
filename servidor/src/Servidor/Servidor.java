@@ -28,11 +28,14 @@ public class Servidor {
 		//registro en el puerto por defecto de rmi
 		int puerto = Registry.REGISTRY_PORT;
 		
-		GestorInt servidor = AuxServidor.configurar(puerto);
+		String autenticar = "rmi://localhost:" + puerto + "/" + ServicioAutentificacionInterface.class.getCanonicalName();
+		String gestor = "rmi://localhost:" + puerto + "/" + ServicioGestorInterface.class.getCanonicalName();
 		
-		DatosInt servicioDatos = AuxServidor.getServicioDatos(puerto);
+		ServicioGestorInterface servidor = AuxServidor.configurar(puerto, autenticar, gestor);
 		
-		AuxServidor.menu(servidor, servicioDatos);
+		ServicioDatosInterface servicioDatos = AuxServidor.getServicioDatos(puerto);
+		
+		AuxServidor.menu(servidor, servicioDatos, autenticar, gestor);
 		
 		System.exit(0);
 			
