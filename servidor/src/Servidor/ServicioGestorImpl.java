@@ -1,5 +1,5 @@
 /**
- * Autor: 	Ricardo Sanchez
+ * Autor: 	Ricardo Sanchez Fernadez
  * Email:	rsanchez628@alumno.uned.es
  */
 
@@ -15,7 +15,7 @@ import Interfaces.*;
 import Datos.*;
 
 /*
- * Implementacion de los servicios Gestor de la aplicacion
+ * Implementacion de los servicios Gestor del servidor
  */
 
 public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioGestorInterface {
@@ -27,7 +27,6 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 		super();
 		int puerto = Registry.REGISTRY_PORT;
 		this.servicioDatos = AuxServidor.getServicioDatos(puerto);
-		// this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
 
 	// el usuario publica un trino
@@ -39,14 +38,22 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 			List<CallbackUsuarioInterface> activos = new LinkedList<CallbackUsuarioInterface>();
 			activos = this.servicioDatos.getActivos(u);
 			AuxServidor.publicar(activos, trino);
-			this.servicioDatos.updatePendientes(u, trino);
+			if (!servicioDatos.checkBan(u)) {
+				this.servicioDatos.updatePendientes(u, trino);
+			}
 		}
 		if (registrar) {
 			servicioDatos.registrarTrino(u);
 		}
 	}
 
-	// el usuario actualiza el timeline
+	/*
+	 * Actualiza el timeline del usuario tras loguearse
+	 * param:
+	 * 	s:		datos del usuario encapsulados junto a la interfaz
+	 * 			con el callback que permite la publicacion de los trinos
+	 * return:	actulizacion del timeline del usuario
+	 */
 	public void updateTrinos(Sesion s) throws java.rmi.RemoteException {
 		List<Trino> sinPublicar = servicioDatos.getTrinos(s);
 
@@ -59,16 +66,6 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 		}
 	};
 
-	/*
-	 * // un usuario bloquea a otro public void bloquear(Usuario lider, Usuario
-	 * bloqueado) throws java.rmi.RemoteException {
-	 * this.servicioDatos.bloquear(lider, bloqueado); }
-	 * 
-	 * // un usuario desbloquea a otro public void desbloquear(Usuario lider,
-	 * Usuario desbloqueado) throws java.rmi.RemoteException {
-	 * this.servicioDatos.desbloquear(lider, desbloqueado); }
-	 */
-
 	// un usuario sigue a otro
 	public void seguir(Sesion sesion, Usuario lider) throws java.rmi.RemoteException {
 		Usuario seguidor = sesion.getUser();
@@ -80,35 +77,10 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 		this.servicioDatos.abandonar(ex, lider);
 	}
 
-	// devuelve la lista de los usuarios registrados en la aplicacion
-	// public List<Usuario> getRegistrados() throws java.rmi.RemoteException{
-	// return this.servicioDatos.getRegistrados();
-	// }
-
-	// devuelve la lista de los usuarios logueados en ese momento en la aplicacion
-	// public List<Sesion> getLogueados() throws java.rmi.RemoteException{
-	// return this.servicioDatos.getLogueados();
-	// }
-
 	// borra el trino de un usuario en la BBDD y evita que le llegue a los usuarios
 	// que esten desloguados
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException {
 		this.servicioDatos.borrarTrino(s, t);
 	}
 
-	// Devuelve la estructura de datos que relaciona usuarios y trinos
-	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
-		return this.servicioDatos.getTrinos();
-	}
-
-	/*
-	 * // test de la funcion bloquear. BORRAR DESPUÉS public HashMap<Usuario,
-	 * List<Usuario>> getBloqueados() throws java.rmi.RemoteException { return
-	 * this.servicioDatos.getBloqueados(); }
-	 */
-
-	// Devuelve la estructura de datos que relaciona usuarios con sus seguidores
-	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {
-		return this.servicioDatos.getSeguidores();
-	}
 }

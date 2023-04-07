@@ -1,19 +1,33 @@
+/**
+ * Autor:	Ricardo Sanchez Fernandez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package Datos;
 
 import java.io.Serializable;
 
 import Interfaces.*;
 
+/*
+ * Clase que encapsula los datos del usuario del sistema junto a su 
+ * CallbackUsuarioInterface para localizar donde enviarle los trinos
+ */
 public class Sesion implements Serializable{
 	
 	private Usuario user;
 	private CallbackUsuarioInterface servidor;
 	
+	//Constructor
 	public Sesion(Usuario u, CallbackUsuarioInterface s) {
 		this.user = u;
 		this.servidor = s;
 	}
 	
+	/*
+	 * Getters y metodos canonicos para dar servicio a la clase
+	 * --------------------------------------------------------
+	 */
 	public Usuario getUser() {
 		return this.user;
 	}

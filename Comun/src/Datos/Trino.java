@@ -1,3 +1,7 @@
+/**
+ * Clase proporcionada por el ED a traves del Curso Virtual
+ */
+
 package Datos;
 
 import java.io.Serializable;
@@ -32,6 +36,7 @@ public class Trino implements Serializable{
 	public String toString(){
 		return (getClass().getName()+"@"+trino+"|"+nickPropietario+"|"+timestamp+"|");
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

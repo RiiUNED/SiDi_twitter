@@ -1,5 +1,5 @@
 /**
- * Autor:	Ricardo Sanchez
+ * Autor:	Ricardo Sanchez Fernandez
  * Email:	rsanchez@alumno.uned.es
  */
 package Servidor;
@@ -13,17 +13,13 @@ import Interfaces.*;
 import Datos.*;
 
 /*
- * Implementacion de los servicios autentificar
- * Registro
- * Login
- * consumidos por los usuarios del servicio
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
+ * Implementacion de los servicios autentificar del servidor
  */
 public class ServicioAutentificacionImpl extends UnicastRemoteObject implements ServicioAutentificacionInterface {
 
 	private ServicioDatosInterface servicioDatos;
 
+	//Constructor
 	public ServicioAutentificacionImpl() throws RemoteException {
 		super();
 		int puerto = Registry.REGISTRY_PORT;
@@ -54,12 +50,7 @@ public class ServicioAutentificacionImpl extends UnicastRemoteObject implements 
 		return this.servicioDatos.desloguear(s);
 	};
 
-	// banea a un usuario impidiendole hacer uso del sistema
-	@Override
-	public boolean banear(Usuario u) throws java.rmi.RemoteException {
-		return this.servicioDatos.banear(u);
-	}
-
+	// Comprueba si un usuario esta registrado
 	@Override
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
 		return this.servicioDatos.checkRegistro(u);

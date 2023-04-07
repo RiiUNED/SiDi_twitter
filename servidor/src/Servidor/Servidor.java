@@ -1,26 +1,17 @@
+/**
+ * Autor:	Ricardo Sanchez Fernandez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package Servidor;
 
-import java.rmi.*;
-import java.rmi.server.*;
-import java.util.HashMap;
+import java.rmi.registry.Registry;
 
 import Interfaces.*;
 
-import java.rmi.registry.Registry.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.LocateRegistry.*;
-import java.rmi.registry.Registry;
-import java.net.*;
-import java.io.*;
-
-import java.util.*;
-
 /*
- * esta clase representa un servidor de objeto
- * @autor: rsanchez628@alumno.uned.es
- * 		Ricardo Sánchez
+ * Punto de entrada al cliente
  */
-
 public class Servidor {
 	
 	public static void main(String args[]) throws Exception{
@@ -31,8 +22,7 @@ public class Servidor {
 		String autenticar = "rmi://localhost:" + puerto + "/" + ServicioAutentificacionInterface.class.getCanonicalName();
 		String gestor = "rmi://localhost:" + puerto + "/" + ServicioGestorInterface.class.getCanonicalName();
 		
-		ServicioGestorInterface servidor = AuxServidor.configurar(puerto, autenticar, gestor);
-		
+		ServicioGestorInterface servidor = AuxServidor.configurar(puerto, autenticar, gestor);		
 		ServicioDatosInterface servicioDatos = AuxServidor.getServicioDatos(puerto);
 		
 		AuxServidor.menu(servidor, servicioDatos, autenticar, gestor);

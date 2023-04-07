@@ -1,5 +1,5 @@
 /**
- * Autor:	Ricardo Sanchez
+ * Autor:	Ricardo Sanchez Fernandez
  * email:	rsanchez628@alumno.uned.es
  */
 

@@ -1,19 +1,17 @@
+/**
+ * Autor:	Ricardo Sanchez Fernandez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package cliente;
 
-//import java.io.*;
 import java.rmi.*;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
-//import java.util.Scanner;
 
 import Interfaces.*;
 
 /*
- * La clase representa un cliente de objeto distribuido
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
+ * Punto de entrada al cliente
  */
 
 public class Cliente {

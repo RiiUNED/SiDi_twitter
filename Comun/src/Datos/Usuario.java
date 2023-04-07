@@ -1,3 +1,8 @@
+/**
+ * Autor:	Ricardo Sanchez Fernandez
+ * email:	rsanchez628@alumno.uned.es
+ */
+
 package Datos;
 
 import java.rmi.server.RemoteObject;
@@ -11,6 +16,9 @@ import java.io.*;
  * 			Ricardo Sanchez
  */
 
+/*
+ * Clase para encapsular los datos de los usuarios
+ */
 public class Usuario implements Serializable {
 	private String name;
 	private String nick;
@@ -23,11 +31,10 @@ public class Usuario implements Serializable {
 		this.password = pass;
 	}
 
-	public Usuario() {
-		// TODO Auto-generated constructor stub
-	}
-
-	// Metodos get and set
+	/*
+	 * Getters y metodos canonicos para dar servicio a la clase
+	 * --------------------------------------------------------
+	 */
 	public String getName() {
 		return name;
 	}
@@ -52,7 +59,6 @@ public class Usuario implements Serializable {
 		this.password = password;
 	}
 
-	// Mostrar usuario
 	public void show() {
 		System.out.println(this.toString());
 	}
@@ -66,14 +72,7 @@ public class Usuario implements Serializable {
 		}
 	}
 
-	// mismo usuario
-	public Boolean identico(Usuario u) {
-		// Boolean name = this.name.equals(u.getName());
-		return this.nick.equals(u.getNick());
-		// Boolean pass = this.password.equals(u.getPassword());
-
-		// return name && nick && pass;
-	}
+	public Boolean identico(Usuario u) {return this.nick.equals(u.getNick());}
 
 	@Override
 	public int hashCode() {

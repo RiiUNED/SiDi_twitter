@@ -1,5 +1,5 @@
 /**
- * Autor: 	Ricardo Sanchez
+ * Autor: 	Ricardo Sanchez Fernandez
  * Email:	rsanchez628@alumno.uned.es
  */
 package cliente;
@@ -16,19 +16,21 @@ import Servicios.*;
 import Datos.*;
 
 // Clase con funciones auxiliares de la clase cliente
-class AuxCliente {
+public class AuxCliente {
 
 	/*
-	 * funcion para ofertar al usuario el primer menu que describe el enunciado de
-	 * la practica autor: rsanchez628@alumno.uned.es
+	 * Publica el primer menu que ofrece la aplicacion al usuario
+	 * param:
+	 * 	setup:			interfaces de con los servicios
+	 * 	servicio:		informacion con la URL del callback de los clientes
+	 * return: publicacion del primer menu
 	 */
-
 	public static void menu1(Configuracion setup, String servicio) throws RemoteException {
-		Scanner sc = new Scanner(System.in);
-		boolean servidor = false;
-		int opcion;
-		ServicioAutentificacionInterface servicioAutentificar = setup.getAutentificar();
-		//List<Usuario> usuarios = DebugC.crearUsuario();
+		Scanner sc = new Scanner(System.in); //Scanner del sistema
+		boolean servidor = false; // bandera para seleccionar opciones en distintas funciones
+		int opcion; // varible para recoger las opciones que vaya introduciendo el usuario
+		//Interfaz con los servicios autentificacion proporcionados por el servidor
+		ServicioAutentificacionInterface servicioAutentificar = setup.getAutentificar(); 
 
 		do {
 			System.out.println("1. Registrar a un nuevo usuario");
@@ -42,7 +44,6 @@ class AuxCliente {
 			switch (opcion) {
 			case 1:
 				System.out.println("Ha elegido registrar a un nuevo usuario.");
-				//DebugC.registrarUsuario(usuarios, servicioAutentificar, sc);
 				registrarUsuario(servicioAutentificar, sc, servidor);
 				break;
 			case 2:
@@ -85,7 +86,18 @@ class AuxCliente {
 		return sesion;
 	}
 	
-	private static boolean checkPass(ServicioAutentificacionInterface servicio, Sesion sesion) throws RemoteException {
+	/*
+	 * Comprueba si el password facilitada por el usuario esta registrada
+	 * en la BBDD para el nick
+	 * param:
+	 * sesion:		datos del cliente proporcionados por el usuario
+	 * return:
+	 * 	true		-> el password es correcto
+	 * 	false		-> el password es incorrecto 
+	 */
+	private static boolean checkPass(
+			ServicioAutentificacionInterface servicio, 
+			Sesion sesion) throws RemoteException {
 		return servicio.checkPass(sesion);
 	}
 	
@@ -121,10 +133,15 @@ class AuxCliente {
 	}
 	
 	/*
-	 * funcion para ofertar al usuario el menu una vez logueado según el enunciado
-	 * de la practica autor: rsanchez628@alumno.uned.es
+	 * Publica el segundo menu que ofrece la aplicacion al usuario
+	 * param:
+	 * 	setup:			interfaces con los servicios
+	 * 	sc:				scanner del sistema
+	 * 	sesion:			datos del cliente encapsulados junto a la interfaz que 
+	 * 					proporciona el callback
+	 * 	servicio:		informacion con la URL del callback de los clientes
+	 * return: publicacion del segundo menu
 	 */
-
 	private static void menu2(
 			Configuracion setup, 
 			Scanner sc, 
@@ -159,17 +176,14 @@ class AuxCliente {
 				break;
 			case 2:
 				System.out.println("Ha elegido enviar trino.");
-				//DebugC.trinar(sesion, serGestor, sc);
 				trinar(sesion, serGestor, sc);
 				break;
 			case 3:
 				System.out.println("Ha elegido listar usuarios del sistema.");
-				//listUser(serGestor);
 				listUser(serAuten);
 				break;
 			case 4:
 				System.out.println("Ha elegido seguir a.");
-				//lider = DebugC.elegirUsuario(usuarios, sc);
 				follow = true;
 				String lNick = getLiderNick(sc, follow);
 				lider = serAuten.getUser(lNick);
@@ -178,14 +192,12 @@ class AuxCliente {
 			case 5:
 				System.out.println("Ha elegido dejar de seguir a.");
 				follow = false;
-				//lider = DebugC.elegirUsuario(usuarios, sc);
 				lider = serAuten.getUser(getLiderNick(sc, follow));
 				serGestor.abandonar(sesion, lider);
 				break;
 			case 6:
 				System.out.println("Borrar trino.");
 				Usuario user = sesion.getUser();
-				//Trino t = DebugC.elegirTrino(user, sc);
 				Trino t = getTrino(sc, user);
 				serGestor.borrarTrino(sesion, t);
 				break;
@@ -242,11 +254,12 @@ class AuxCliente {
 	
 	/*
 	 * El proceso cliente trina
-	 * @param
-	 * Sesion:		sesion del cliente que trina -> interfaz para hacer callback
+	 * param
+	 * sesion:		datos encapsulador del cliente que trina junto a la 
+	 * 				interfaz para hacer callback
 	 * serGestor:	interfaz con la llamada al metodo del servidor
 	 * sc:			scanner para comunicación de los procesos con el usuario
-	 * @return:
+	 * return:
 	 * publicación del trino del proceso cliente
 	 * 
 	 */
@@ -259,7 +272,6 @@ class AuxCliente {
 		boolean registrar = true;
 		String askTrino = "Introduzca el trino";
 		String trinoTxt = Auxiliar.getString(sc, askTrino);
-		//Trino trino = elegirTrino(user, sc);
 		Trino trino = new Trino(nick, trinoTxt);
 
 		try {
@@ -270,33 +282,20 @@ class AuxCliente {
 		}
 	}
 
-	/*
-	 * Servico Autentificar. Registra a un usuario en la aplicacion
-	 * 
-	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
-	 */
-	/*
-	private static void autentificar(AutentificarInt servicio, Usuario u) {
-		u.show();
-		try {
-			if (servicio.registrar(u)) {
-				System.out.println("el usuario se ha registrado correctamente");
-			} else {
-				System.out.println("ya existe un usuario registrado con nick: " + u.getNick());
-			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 
 	/*
-	 * Servico Autentificar. Loguea a un usuario en la aplicacion
-	 * 
-	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
+	 * Loguea al usuario en la aplicacion
+	 * param:
+	 * 	servicio:		interfaz con los servicios autentificar del servidor
+	 * 	sesion:			datos del cliente encapsulados junto a la interfaz que 
+	 * 					proporciona el callback
+	 * return:
+	 * 	true			-> el usuario se loguea correctamente
+	 * 	false			-> el usuario no sea logueado
 	 */
-	private static boolean loguear(ServicioAutentificacionInterface servicio, Sesion s) throws java.rmi.RemoteException {
-		// u.show();
+	private static boolean loguear(
+			ServicioAutentificacionInterface servicio, 
+			Sesion s) throws java.rmi.RemoteException {
 		Usuario u = s.getUser();
 		if (!servicio.checkRegistro(u)) {
 			System.out.println("El usuario no se encuenta registrado");
@@ -311,7 +310,6 @@ class AuxCliente {
 					return false;
 				}
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return false;
 			}
@@ -319,11 +317,15 @@ class AuxCliente {
 	}
 
 	/*
-	 * Servico Autentificar. Registra a un usuario en la aplicacion
-	 * 
-	 * @autor: rsanchez628@alumno.uned.es Ricardo Sanchez
+	 * Registra al usuario en la aplicacion
+	 * param:
+	 * 	servicio:		interfaz con los servicios autentificar del servidor
+	 * 	usuario:		datos del cliente encapsulados 
+	 * return: usuario registrado
 	 */
-	private static void registrar(ServicioAutentificacionInterface servicio, Usuario u) {
+	private static void registrar(
+			ServicioAutentificacionInterface servicio, 
+			Usuario u) {
 		u.show();
 		try {
 			if (servicio.registrar(u)) {
@@ -333,11 +335,24 @@ class AuxCliente {
 				System.out.println("ya existe un usuario registrado con nick: " + u.getNick());
 			}
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/*
+	 * Importa las interfaces que publica el servidor para que los clientes
+	 * puedan consumir sus servicios:
+	 * 	-> servicio autentificar
+	 * 	-> servicio gestor
+	 * Publica la interfaz del cliente en la que se puede hacer callback para
+	 * mostrar los trinos
+	 * param:
+	 * 	puerto: 		puerto del que se importan las interfaces del servidor
+	 * 	servicio:		informacion con la URL del callback de los clientes
+	 * return:
+	 * 	interfaces con los servicios del servidor importadas
+	 * 	interfaz con el callbak del cliente publicada
+	 */
 	static Configuracion configurar(int puerto, String servicio) {
 		try {
 
@@ -356,18 +371,15 @@ class AuxCliente {
 				registry = LocateRegistry.createRegistry(puerto);
 			}
 
+			// Publica la interfaz del cliente
 			CallbackUsuarioInterface servidorC = new CallbackUsuarioImpl();
 
 			servidorC = (CallbackUsuarioInterface) UnicastRemoteObject.exportObject(servidorC, 0);
-//			Naming.rebind("rmi://localhost:" + puerto + "/" + CallbackInt.class.getCanonicalName(), servidorC);
 			Naming.rebind(servicio, servidorC);
 
 			return new Configuracion(servicioAutentificar, servicioGestor, servidorC);
 
 		} catch (Exception e) {
-/*
-			System.out.println("Excepcion: " + e);
-			e.printStackTrace(); */
 			System.out.println("El correcto orden para levantar servicios es:");
 			System.out.println("1. BBDD");
 			System.out.println("2. Servidor");
@@ -378,55 +390,43 @@ class AuxCliente {
 			System.out.println("3. BBDD");
 			System.exit(0);
 			return new Configuracion(null, null, null);
-
 		}
 	}
 
-	// Para chequear el correcto funcionamiento del sistema
-	// -----------------------------------------------------
-	// BORRAR DESPUÉS
-
-	// --- funciones que muestran por consola la BBDD del servidor
 	/*
-	public static void showTrinos(HashMap<Usuario, List<Trino>> tp) {
-		for (Map.Entry<Usuario, List<Trino>> entry : tp.entrySet()) {
-			Usuario u = entry.getKey();
-			String nick = u.getNick();
-			System.out.println("El usuario " + nick + " ha publicado:");
-			List<Trino> l = entry.getValue();
-			for (Trino e : l) {
-				System.out.println(e.getMessage());
-				System.out.println();
-			}
-		}
-	}*/
-/*
-	public static void showBloqueados(HashMap<Usuario, List<Usuario>> ub) {
-		for (Map.Entry<Usuario, List<Usuario>> entry : ub.entrySet()) {
-			Usuario u = entry.getKey();
-			String nick = u.getNick();
-			System.out.println("El usuario " + nick + " bloqueado a:");
-			List<Usuario> l = entry.getValue();
-			for (Usuario e : l) {
-				e.show();
-				System.out.println();
-			}
-		}
+	 * informa de la URL del servicio RMI del callback del proceso cliente
+	 * param:
+	 * 	servicio:		informacion con la URL del callback de los clientes
+	 * return: 	salida por consola con la informacion sobre la URL del servicio
+	 * 			RMI del callback del proceso cliente
+	 */
+	static void info(String servicio) {
+		System.out.println("Servicio RMI del cliente");
+		System.out.println("Servicio: "+servicio);
 	}
-
-	public static void showSeguidos(HashMap<Usuario, List<Usuario>> ls) {
-		for (Map.Entry<Usuario, List<Usuario>> entry : ls.entrySet()) {
-			Usuario u = entry.getKey();
-			String nick = u.getNick();
-			System.out.println("Los usuarios del seguidor: " + nick + " son:");
-			List<Usuario> l = entry.getValue();
-			for (Usuario e : l) {
-				e.show();
-				System.out.println();
-			}
-		}
-	}*/
 	
+	/*
+	 * Informa al usuario de usuarios registrados y logueados en la aplicacion
+	 * param:
+	 * 	servidor: 		interfaz con los servicios de autentificacion publicados
+	 * 					por el servidor.
+	 * return:
+	 * 	publicacion de los usuarios registrados
+	 * 	publicacion de los usuarios logueados
+	 */
+	private static void listUser(ServicioAutentificacionInterface servidor) throws RemoteException {
+		List<Usuario> lu = servidor.getRegistrados();
+		List<Sesion> ls = servidor.getLogueados();
+		showRegistrados(lu);
+		showLogueados(ls);
+	}
+	
+	/*
+	 * Muestra por consola los usuarios registrados en la aplicacion
+	 * param: 
+	 * 	l:		Estructura de datos con los usuarios registrados
+	 * return: publicacion de los usuarios registrados
+	 */
 	private static void showRegistrados(List<Usuario> l) {
 		System.out.println("Usuarios registrados en la aplicacion.");
 		for (Usuario e : l) {
@@ -435,6 +435,12 @@ class AuxCliente {
 		}
 	}
 	
+	/*
+	 * Muestra por consola los usuarios logueados en la aplicacion
+	 * param: 
+	 * 	l:		Estructura de datos con los usuarios logueados
+	 * return: publicacion de los usuarios logueados
+	 */
 	private static void showLogueados(List<Sesion> l) {
 		Usuario u;
 		System.out.println("Usuarios actualmente logueados en la aplicacion.");
@@ -443,22 +449,5 @@ class AuxCliente {
 			u.show();
 			System.out.println();
 		}
-	}
-	
-	private static void listUser(ServicioAutentificacionInterface servidor) throws RemoteException {
-		List<Usuario> lu = servidor.getRegistrados();
-		List<Sesion> ls = servidor.getLogueados();
-		showRegistrados(lu);
-		showLogueados(ls);
-	}
-	
-	static void info(String servicio) {
-		// showBaneados();
-		// showTrinoB();
-		// Auxiliar.showSeguidores(this.seguidores);
-
-		System.out.println("Servicio RMI del cliente");
-		System.out.println("Servicio: "+servicio);
-		//System.out.println("Servicio gestor: "+gestor);
 	}
 }

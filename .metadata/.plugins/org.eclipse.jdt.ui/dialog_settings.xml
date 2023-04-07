@@ -104,8 +104,11 @@
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION" value="C:\Users\Ricardo\eclipse-workspace\SiDi"/>
 		<item key="FatJarPackageWizardPage.LIBRARY_HANDLING" value="1"/>
 		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="Cliente - Cliente"/>
-		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="C:\Users\Ricardo\Documents\tuiter\Cliente.jar"/>
+		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="E:\Tiempo ganado\Informática UNED\3 Tercero\1 Cuatrimestre\SiDi\2223\Práctica\Ejecutables\cliente.jar"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="E:\Tiempo ganado\Informática UNED\3 Tercero\1 Cuatrimestre\SiDi\2223\Práctica\Ejecutables\cliente.jar"/>
+			<item value="E:\Tiempo ganado\Informática UNED\3 Tercero\1 Cuatrimestre\SiDi\2223\Práctica\Ejecutables\servidor.jar"/>
+			<item value="E:\Tiempo ganado\Informática UNED\3 Tercero\1 Cuatrimestre\SiDi\2223\Práctica\Ejecutables\basededatos.jar"/>
 			<item value="C:\Users\Ricardo\Documents\tuiter\Cliente.jar"/>
 			<item value="C:\Users\Ricardo\Documents\tuiter\Servidor.jar"/>
 			<item value="C:\Users\Ricardo\Documents\tuiter\BBDD.jar"/>

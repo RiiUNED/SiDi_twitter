@@ -1,5 +1,5 @@
 /**
- * Autor:	Ricardo Sanchez
+ * Autor:	Ricardo Sanchez Fernandez
  * email:	rsanchez628@alumno.uned.es
  */
 
@@ -11,7 +11,7 @@ import java.util.*;
 import Datos.*;
 
 /*
- * Interfaz con los servicios Auntentificar que serán consumidos 
+ * Interfaz con los servicios Auntentificar que seran consumidos 
  * por los clientes del servicio
  */
 
@@ -27,7 +27,7 @@ public interface ServicioAutentificacionInterface extends Remote {
 	public boolean desloguear(Sesion s) throws java.rmi.RemoteException;
 
 	// banea a un usuario impidiendole hacer uso del sistema
-	public boolean banear(Usuario u) throws java.rmi.RemoteException;
+	//public boolean banear(Usuario u) throws java.rmi.RemoteException;
 
 	// comprueba si un usuario está registrado
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException;

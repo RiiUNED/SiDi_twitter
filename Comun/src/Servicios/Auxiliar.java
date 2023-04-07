@@ -1,5 +1,5 @@
 /**
- * Autor:	Ricardo Sanchez
+ * Autor:	Ricardo Sanchez Fernandez
  * email:	rsanchez628@alumno.uned.es
  */
 
@@ -44,8 +44,6 @@ public class Auxiliar {
 		String data = null;
 		System.out.println(texto);
 		data = sc.nextLine();
-		//sc.nextLine();
-		//sc.nextInt();
 		return data;
 	}
 	
@@ -69,37 +67,6 @@ public class Auxiliar {
 			}
 		}
 	}
-	/*
-	public static void showPendientes(HashMap<Trino, List<Usuario>> pendientes) {
-		List<Trino> llaves = new LinkedList<Trino>(pendientes.keySet());
-		for(Trino k : llaves) {
-			System.out.println("el trino");
-			k.showTrino();
-			System.out.println("no fue enviado a los usuarios");
-			List<Usuario> s = pendientes.get(k);
-			for(Usuario u : s) {
-				u.show();
-			}
-		}
-	}
-	
-	public static void showUsuarios(List<Usuario> l) {
-		for(Usuario u :l) {
-			u.show();
-		}
-	}
-	
-	public static void showSesiones(List<Sesion> sesiones) {
-		for(Sesion s : sesiones) {
-			s.show();
-		}
-	}
-	
-	public static void showTrinos(List<Trino> trinos) {
-		for(Trino t : trinos) {
-			t.showTrino();
-		}
-	}*/
 	
 	/*
 	 * Devuelve los seguidores del usuario que se pasa como argumento

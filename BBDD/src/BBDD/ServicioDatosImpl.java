@@ -1,3 +1,7 @@
+/**
+ * Autor: 	Ricardo Sanchez Fernadez
+ * Email:	rsanchez628@alumno.uned.es
+ */
 package BBDD;
 
 import java.rmi.RemoteException;
@@ -8,16 +12,9 @@ import Interfaces.*;
 import Datos.*;
 import Servicios.*;
 
-/*Implementacion de los servicios Datos
- * de la BBDD
- * enviar trino
- * bloquear usuario - desbloquear
- * seguir usario - dejar de seguir
- * consumidos por los usuarios del servicio / proceso cliente
- * @autor: rsanchez628@alumno.uned.es
- * 			Ricardo Sanchez
+/*
+ * Implementacion de los servicios autentificar del servidor
  */
-
 public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDatosInterface {
 
 	private List<Usuario> registrados;
@@ -26,7 +23,6 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 	private List<TrinoRegistrado> trinoR;
 	private HashMap<Usuario, List<Trino>> trinos;
 	private HashMap<Usuario, List<Trino>> trinosB;
-	// private HashMap<Usuario, List<Usuario>> bloqueos;
 	private HashMap<Usuario, List<Usuario>> seguidores;
 	private HashMap<Trino, List<Usuario>> pendientes;
 
@@ -38,7 +34,6 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		this.trinoR = new LinkedList<TrinoRegistrado>();
 		this.trinos = new HashMap<Usuario, List<Trino>>();
 		this.trinosB = new HashMap<Usuario, List<Trino>>();
-		// this.bloqueos = new HashMap<Usuario, List<Usuario>>();
 		this.seguidores = new HashMap<Usuario, List<Usuario>>();
 		this.pendientes = new HashMap<Trino, List<Usuario>>();
 	}
@@ -51,7 +46,13 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 	}
 
-	// Devuelve servidores de los usuarios activos
+	/*
+	 * Duvuelve una estructura de datos con los usuario logueados que siguen al usuario que 
+	 * se le pasa por parametro
+	 * param:
+	 * u:		usuario del que se quieren conseguir los seguidores logueados
+	 * return: estructura de datos con los seguidores logueados
+	 */
 	@Override
 	public List<CallbackUsuarioInterface> getActivos(Usuario u) throws java.rmi.RemoteException {
 
@@ -70,7 +71,15 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return activos;
 	}
 
-	// actualiza los trinos sin enviar a los usuarios desconectados
+	/*
+	 * Actualiza la estructura de datos que relaciona trinos y usuarios que no 
+	 * estaban logueados y deben recibir el trino cuando se logueen
+	 * param:
+	 * 	u:		usuario que trina
+	 * 	t:		trino que publica el usuario
+	 * return:
+	 * estructura de datos actualizada
+	 */
 	@Override
 	public void updatePendientes(Usuario u, Trino t) throws java.rmi.RemoteException {
 		List<Usuario> inactivos = new LinkedList<Usuario>();
@@ -79,7 +88,14 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		this.pendientes.put(t, inactivos);
 	}
 
-	// registra usuarios en el sistema
+	/*
+	 * Añade un usuario a la estructura de datos que guarda los datos de los
+	 * usuarios registrados
+	 * param:
+	 * 	u: 	usuario que acaba de registrarse
+	 * return:
+	 * estructra de datos actualizada
+	 */
 	@Override
 	public boolean registrar(Usuario u) throws java.rmi.RemoteException {
 		if (!AuxDatos.containsU(this.registrados, u)) {
@@ -102,23 +118,32 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return this.logueados;
 	}
 
-	// chequea si un usuario esta registrado
+	/*
+	 * chequea si un usuario esta registrado en el sistema
+	 * param:
+	 * 	u: 		usuario del que se quiere comprobar si esta registrado en el 
+	 * 			sistema
+	 * return:
+	 * 	true	-> el usuario esta registrado en el sistema
+	 * 	false	-> el usuario no esta registrado en el sistema
+	 */
 	public boolean checkRegistro(Usuario u) throws java.rmi.RemoteException {
 		return AuxDatos.containsU(this.registrados, u);
 	}
 
-	// chequea si un usuario esta logueado
-	public boolean checkLog(Sesion s) throws java.rmi.RemoteException {
-		return AuxDatos.containsS(this.logueados, s);
-	}
-
-	// loguea usuarios en el sistema
-
-	// Chequear que el pass sea correcto
+	/*
+	 * Añade un usuario a la estructura de datos que guarda los datos de los
+	 * usuarios logueados
+	 * param:
+	 * 	s: 		datos del usuario que se loguea
+	 * return:
+	 * true		-> el usuario se loguea con exito
+	 * false	-> el usuario no se loguea con exito
+	 */
 	@Override
 	public boolean loguear(Sesion s) throws java.rmi.RemoteException {
-		// if (!AuxDatos.contains(this.logueados, u)) {
-		if (!this.checkLog(s)) {
+		List<Sesion> l = this.logueados;
+		if (!AuxDatos.checkLog(s, l)) {
 			this.logueados.add(s);
 			return true;
 		} else {
@@ -126,7 +151,13 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 	}
 
-	// devuelve una lista de trinos que el usuario no publicó estando deslogueado
+	/*
+	 * Devuelve una estructura de datos con los trinos que no recibio
+	 * un usuario mientras estuvo deslogueado
+	 * param:
+	 * 	s: 		datos encapsulados del usuario deslogueado
+	 * return: estructura de datos con los trinos no recibidos
+	 */
 	@Override
 	public List<Trino> getTrinos(Sesion s) throws java.rmi.RemoteException {
 		List<Trino> sinPublicar = new LinkedList<Trino>();
@@ -137,7 +168,15 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return sinPublicar;
 	};
 
-	// desloguea al usuario cuando sale de la aplicación
+	/*
+	 * Elimina un usuario de la estructura de datos que guarda los datos de los
+	 * usuarios logueados
+	 * param:
+	 * 	s: 		datos del usuario que elimina
+	 * return:
+	 * true		-> el usuario se desloguea con exito
+	 * false	-> el usuario no se desloguea con exito
+	 */
 	@Override
 	public boolean desloguear(Sesion s) throws java.rmi.RemoteException {
 
@@ -150,11 +189,17 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return !AuxDatos.containsS(this.logueados, s);
 	};
 
-	// banea a un usuario
-	// la aplicacion retiene los trinos del usario hasta que se le desbanea
+	/*
+	 * Bloquea a un usuario añadiendole a la correspondiente estructura de datos
+	 * para que no pueda enviar mas trinos
+	 * param:
+	 * 	u:		usuario que se bloquea
+	 * return: 
+	 * 	true	-> usuario bloqueado con exito
+	 * 	flase	-> usuario no bloqueado con exito
+	 */
 	@Override
 	public boolean banear(Usuario u) throws java.rmi.RemoteException {
-		// if (!this.baneados.contains(u)) {
 		if (AuxDatos.containsU(this.baneados, u)) {
 			return false;
 		} else {
@@ -163,12 +208,29 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 	}
 
-	// levanta el baneo a un usuario impidiendole hacer uso del sistema
+	/*
+	 * Levanta el bloqueo a un usuario eliminandole de la correspondiente 
+	 * estructura de datos para que pueda enviar trinos
+	 * param:
+	 * 	u:		usuario que se bloquea
+	 * return: 
+	 * 	estructura de datos con trinos
+	 */
+	@Override
 	public List<Trino> unban(Usuario u) throws java.rmi.RemoteException {
 		AuxDatos.removeU(this.baneados, u);
 		return AuxDatos.getTargetedKeyUT(this.trinosB, u);
 	}
 
+	/*
+	 * Regitra el trino enviado en la estructura de datos que relaciona 
+	 * usuarios y trinos
+	 * param:
+	 * 	u:		usuario que publica el trino
+	 * 	t:		trino publicado
+	 * return: estructura de datos actualizada
+	 */
+	@Override
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException {
 		List<Usuario> parlantes = new LinkedList<Usuario>(this.trinos.keySet());
 		if (AuxDatos.containsU(parlantes, u)) {
@@ -181,7 +243,13 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 	}
 
-	// registra el trino con timestamp en la BBDD
+	/*
+	 * Actualiza la lista de los trinos publicados
+	 * param:
+	 * 	u:		usuario que publica el trino
+	 * return: estructura de datos actualizada
+	 */
+	@Override
 	public void registrarTrino(Usuario u) throws java.rmi.RemoteException {
 		String nick = u.getNick();
 		TrinoRegistrado tR = new TrinoRegistrado(nick);
@@ -189,15 +257,13 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 	}
 
 	/*
-	 * public void bloquear(Usuario lider, Usuario bloqueado) throws
-	 * java.rmi.RemoteException { if (this.bloqueos.containsKey(lider)) {
-	 * this.bloqueos.get(lider).add(bloqueado); } else { List<Usuario> l = new
-	 * LinkedList<>(); l.add(bloqueado); this.bloqueos.put(lider, l); } }
-	 * 
-	 * public void desbloquear(Usuario lider, Usuario desbloqueado) throws
-	 * java.rmi.RemoteException { this.bloqueos.get(lider).remove(desbloqueado); }
+	 * Un usuario de hace seguidor de otro
+	 * param:
+	 * 	lider:		usuario al que se va a seguir
+	 * 	seguidor:	usuario que recibira los trinos del lider
+	 * return: estructuras de datos actualizadas
 	 */
-
+	@Override
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException {
 		if (Auxiliar.checkLlavesUU(this.seguidores, lider)) {
 			List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
@@ -210,7 +276,14 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 
 	}
 
-	// registra el trino como de un usuario baneado
+	/*
+	 * Actualiza la estrutura de datos que registra los trinos bloqueados
+	 * param:
+	 * 	u:		usuario que trina
+	 * 	t:		trino
+	 * return: estructura de datos actualizada
+	 */
+	@Override
 	public void putTrinoB(Usuario u, Trino t) throws java.rmi.RemoteException {
 		if (Auxiliar.checkLlavesUT(this.trinosB, u)) {
 			List<Trino> misTrinosB = Auxiliar.getMisTrinos(this.trinosB, u);
@@ -222,80 +295,60 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 	}
 
+	/*
+	 * Un usuario deja de seguir a otro
+	 * param:
+	 * 	ex:			datos del usuario que deja de seguir al otro
+	 * 	lider:		usuario que es abandonado
+	 * return: estructuras de datos actualizadas
+	 */
+	@Override
 	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException {
 		Usuario exU = ex.getUser();
-		// this.seguidores.get(lider).remove(exU);
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(this.seguidores, lider);
-		// System.out.println(misSeguidores.size());
-		//this.seguidores.remove(lider);
-		//System.out.println(misSeguidores.size());
 		AuxDatos.removeU(misSeguidores, exU);
-		//System.out.println(misSeguidores.size());
 		if(misSeguidores.isEmpty()) {this.seguidores.remove(lider);}
-		// this.seguidores.put(lider, misSeguidores);
-	}
-
-	// test de la función trinar. BORRAR DESPUÉS
-	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException {
-		return this.trinos;
 	}
 
 	/*
-	 * // test de las funciones bloquear desbloquear. BORRAR DESPUÉS public
-	 * HashMap<Usuario, List<Usuario>> getBloqueados() throws
-	 * java.rmi.RemoteException { return this.bloqueos; }
+	 * Borra el trino de un usuario en la BBDD y evita que le llegue a los seguidores
+	 * que no esten desloguados
+	 * param:
+	 * 	s:		datos del usuario que quiere borrara el trino
+	 * 	t: 		trino que se quiere borrar
+	 * return: estructuras de datos actualizadas
 	 */
-
-	// test de las funciones seguir abandonar. BORRAR DESPUÉS
-	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException {
-		return this.seguidores;
-	}
-
-	/*
-	 * borar el trino de un usuario en la BBDD y evita que le llegue a los usuarios
-	 * que lo estén desloguados
-	 */
+	@Override
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException {
+		HashMap<Usuario, List<Trino>> ts = this.trinos;
+		HashMap<Trino, List<Usuario>> p = this.pendientes;
 		Usuario u = s.getUser();
-		borrarRegistro(u, t);
-		borrarPendientes(t);
+		AuxDatos.borrarRegistro(u, t, ts);
+		AuxDatos.borrarPendientes(t, p);
 	}
 
-	// bora un trino registrado en la BBDD
-	public void borrarRegistro(Usuario u, Trino t) {
-		List<Trino> misTrinos = Auxiliar.getMisTrinos(this.trinos, u);
-		misTrinos = AuxDatos.removeT(misTrinos, t);
-		// Auxiliar.showTrinos(misTrinos);
-	}
-
-	// evita que el trino le llegue a usuarios deslogueados
-	public void borrarPendientes(Trino t) {
-		List<Trino> llaves = new LinkedList<Trino>(this.pendientes.keySet());
-		for (Trino llave : llaves) {
-			if (llave.equals(t)) {
-				this.pendientes.remove(llave);
-			}
-		}
-	}
-
-	// muestra la estructura de trinos y usuario baneados
-	public void showTrinoB() {
-		System.out.println("Trinos baneados:");
-		AuxDatos.showMapTrino(this.trinosB);
-	}
-
-	// muestra los usuarios baneados
-	public void showBaneados() {
-		System.out.println("Usuarios baneados: ");
-		AuxDatos.showLU(this.baneados);
-	}
-
-	// chequea si un usuario fue baneado
+	/*
+	 * chequea si un usuario fue baneado
+	 * param:
+	 * 	u: 		usuario que se quiere banear
+	 * return:
+	 * 	true:	-> el usuario ha sido baneado
+	 * 	false:	-> el usuario no ha sido baneado
+	 */
+	@Override
 	public boolean checkBan(Usuario u) throws java.rmi.RemoteException {
 		return AuxDatos.containsU(this.baneados, u);
 	}
 
-	// devuelve el usuario registrado del que se le pase nick
+	/*
+	 * devuelve el usuario registrado del que se le pase nick
+	 * param:
+	 * 	nick:	nick del usuario que se busca
+	 * return: 
+	 * 	usuario registrado con el nick, si existe
+	 * 	null, no existe usuario registrado con ese nick 
+	 */
+	@Override
 	public Usuario getUser(String nick) throws java.rmi.RemoteException {
 		Usuario user = null;
 		List<Usuario> registrados = this.registrados;
@@ -308,8 +361,16 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return user;
 	}
 
-	// chequea si la contraseña se corresponde con la registrada al nick del usuario
-	// que se proporciono para generar la sesion
+	/*
+	 * Comprueba si el password facilitada por el usuario esta registrada
+	 * en la BBDD para el nick
+	 * param:
+	 * sesion:		datos del cliente proporcionados por el usuario
+	 * return:
+	 * 	true		-> el password es correcto
+	 * 	false		-> el password es incorrecto 
+	 */
+	@Override
 	public boolean checkPass(Sesion sesion) throws java.rmi.RemoteException{
 		boolean check = false;
 		List<Usuario> registrados = this.registrados;
@@ -323,4 +384,8 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		}
 		return check;
 	}
+	
+	
+
+
 }

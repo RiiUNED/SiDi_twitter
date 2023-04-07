@@ -1,5 +1,5 @@
 /**
- * Autor: 	Ricardo Sanchez
+ * Autor: 	Ricardo Sanchez Fernandez
  * Email:	rsanchez628@alumno.uned.es
  */
 
@@ -56,42 +56,18 @@ public interface ServicioDatosInterface extends Remote {
 	// añade el trino a la estructura de datos que relaciona usuario y trinos
 	public void trinar(Usuario u, Trino t) throws java.rmi.RemoteException;
 
-	// --------------------------- bloquear
-	// bloquear a un usuario
-	// public void bloquear(Usuario lider, Usuario bloqueado) throws
-	// java.rmi.RemoteException;
-
-	// desbloquear a un usuario
-	// public void desbloquear(Usuario lider, Usuario desbloqueado) throws
-	// java.rmi.RemoteException;
-
 	// seguir a otro usuario
 	public void seguir(Usuario lider, Usuario seguidor) throws java.rmi.RemoteException;
 
 	// abandonar a un lider
 	public void abandonar(Sesion ex, Usuario lider) throws java.rmi.RemoteException;
 
-
-	// Devuelve la estructura de datos que relaciona usuarios y trinos
-	public HashMap<Usuario, List<Trino>> getTrinos() throws java.rmi.RemoteException;
-
-	// test de las funciones bloquear desbloquear. BORRAR DESPUÉS
-	// public HashMap<Usuario, List<Usuario>> getBloqueados() throws
-	// java.rmi.RemoteException;
-
-	// Devuelve la estructura de datos que relaciona a los usuarios y con sus seguidores
-	public HashMap<Usuario, List<Usuario>> getSeguidores() throws java.rmi.RemoteException;
-
-	
 	// borra el trino de un usuario en la BBDD y evita que le llegue a los usuarios
 	// que esten desloguados 
 	public void borrarTrino(Sesion s, Trino t) throws java.rmi.RemoteException;
 
 	//publica los trinos en los timeline correspondientes
 	public void imprimirTrinos() throws java.rmi.RemoteException;
-
-	// vacia la info de la BBDD
-	//public void info(String servicio) throws java.rmi.RemoteException;
 
 	// chequea si un usuario fue baneado
 	public boolean checkBan(Usuario u) throws java.rmi.RemoteException;
