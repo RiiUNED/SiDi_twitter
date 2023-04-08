@@ -353,7 +353,7 @@ public class AuxCliente {
 	 * 	interfaces con los servicios del servidor importadas
 	 * 	interfaz con el callbak del cliente publicada
 	 */
-	static Configuracion configurar(int puerto, String servicio) {
+	protected static Configuracion configurar(int puerto, String servicio) {
 		try {
 
 			// IMPORTAR LAS INTERFACES
@@ -400,7 +400,7 @@ public class AuxCliente {
 	 * return: 	salida por consola con la informacion sobre la URL del servicio
 	 * 			RMI del callback del proceso cliente
 	 */
-	static void info(String servicio) {
+	private static void info(String servicio) {
 		System.out.println("Servicio RMI del cliente");
 		System.out.println("Servicio: "+servicio);
 	}

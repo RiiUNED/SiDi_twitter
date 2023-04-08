@@ -60,12 +60,14 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		HashMap<Usuario, List<Usuario>> seguidores = this.seguidores;
 		List<Usuario> misSeguidores = Auxiliar.getMisSeguidores(seguidores, u);
 
-		for (Usuario seguidor : misSeguidores) {
-			for (Sesion s : this.logueados) {
-				if (seguidor.identico(s.getUser())) {
-					activos.add(s.getServidor());
+		if(misSeguidores!=null) {
+			for (Usuario seguidor : misSeguidores) {
+				for (Sesion s : this.logueados) {
+					if (seguidor.identico(s.getUser())) {
+						activos.add(s.getServidor());
+					}
 				}
-			}
+			}	
 		}
 
 		return activos;
@@ -385,7 +387,4 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 		return check;
 	}
 	
-	
-
-
 }

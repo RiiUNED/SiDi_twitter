@@ -122,12 +122,11 @@ public class AuxServidor {
 			ServicioGestorInterface servidor, 
 			ServicioDatosInterface d, 
 			Usuario u) throws RemoteException {
-		//List<Trino> trinosB = d.unban(u);
-
-		/*
+		List<Trino> trinosB = d.unban(u);
+	
 		for (Trino t : trinosB) {
 			servidor.trinar(u, t, false);
-		}*/
+		}
 	}
 
 	/*

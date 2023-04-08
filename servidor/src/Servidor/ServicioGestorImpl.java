@@ -37,9 +37,13 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 			this.servicioDatos.trinar(u, trino);
 			List<CallbackUsuarioInterface> activos = new LinkedList<CallbackUsuarioInterface>();
 			activos = this.servicioDatos.getActivos(u);
-			AuxServidor.publicar(activos, trino);
-			if (!servicioDatos.checkBan(u)) {
-				this.servicioDatos.updatePendientes(u, trino);
+			if(activos!=null) {
+				AuxServidor.publicar(activos, trino);
+				if (!servicioDatos.checkBan(u)) {
+					this.servicioDatos.updatePendientes(u, trino);
+				} else {
+					registrar = false;
+				}
 			}
 		}
 		if (registrar) {
